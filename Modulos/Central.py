@@ -14,7 +14,11 @@ class Central:
             raise ValueError("Este numero no existe")
         Central.telefonos_registrados[self.id_telefono] = telefono
 
-    def baja_id(selfself, telefono: Telefono):
+    def baja_id(self, telefono: Telefono):
+        if telefono.numero not in Telefono.numeros_registrados:
+            raise ValueError("Este numero no existe")
+        id_eliminado = Central.telefonos_registrados.pop(self.id_telefono)
+        print(f"{id_eliminado} fue eliminado")
 
 try:
     if __name__ == '__main__':
@@ -22,6 +26,8 @@ try:
         print(Telefono.numeros_registrados)
         id1 = Central(1)
         id1.alta_id(telefono_nacho)
+        print(Central.telefonos_registrados)
+        id1.baja_id(telefono_nacho)
         print(Central.telefonos_registrados)
 
 except ValueError as e:
