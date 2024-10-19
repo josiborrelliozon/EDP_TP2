@@ -1,27 +1,12 @@
-class App:
-    def __innit__(self, id_app):
-        self.id_app = id_app
-
-class Contactos(App):
-    def __innit__(self, nombre, numero, correo, id_app):
-        super().__init__(id_app)
-        self.nombre = nombre
-        self.numero= numero
-        self.correo = correo
-
-    def actualizar_contacto(self, nuevo_nombre, nuevo_numero, nuevo_correo):
-        self.nombre = nuevo_nombre
-        self.numero = nuevo_numero
-        self.correo = nuevo_correo
-
-#class TelefonoApp:
-#    def __innit__(self, ):
-
-
 
 class Telefono:
-    def __init__(self, id, nombre, modelo, os, version_os, ram, almacenamiento, numero, estado = 0, estado_pan = 0):
-        self.id = id # hay q hacerlo unico en central, dentral da los id
+
+    numeros_registrados = []
+
+    def __init__(self, nombre, modelo, os, version_os, ram, almacenamiento, numero, estado = 0, estado_pantalla = 0, estado_red=0):
+        #if len(str(numero)) != 8:
+         #   raise ValueError("El numero ingresado es inválido")
+
         self.nombre = nombre
         self.modelo = modelo
         self.os = os
@@ -30,32 +15,55 @@ class Telefono:
         self.almacenamiento = almacenamiento
         self.numero = numero
         self.estado = estado
-        self.estado_pan = estado_pan
+        self.estado_pantalla = estado_pantalla
+        self.estado_red = estado_red
+        Telefono.numeros_registrados.append(self.numero)
 
-    def encenderse(self):
+    def __repr__(self):
+        return f'(nombre: {self.nombre}, modelo: {self.modelo} , numero: {self.numero})'
+
+    def on_off(self):
         if self.estado == 0:
             self.estado = 1
+            print(f'Prendido: {self}')
         else:
             self.estado = 0
+            print(f'Apagado {self}')
 
     def desbloquear(self):
         if self.estado ==1:
-            if self.estado_pan == 0:
-                self.estado_pan = 1
+            if self.estado_pantalla == 0:
+                self.estado_pantalla = 1
+                print(f'Pantalla desbloqueada: {self}')
             else:
-                self.estado_pan = 0
+                self.estado_pantalla = 0
+                print(f'Pantalla bloqueada: {self}')
         else:
-            raise Exception("El celular esta apagado")
+            raise Exception("El celular se encuentra apagado")
+
+
+#creo las instancias de telefonos
+
+
+
 try:
-    mi_telefono = Telefono(2,"jose","nokia","ios",12,8,500,4313)
-    print(mi_telefono.estado, mi_telefono.estado_pan)
-    mi_telefono.encenderse()
-    print(mi_telefono.estado, mi_telefono.estado_pan)
-    mi_telefono.desbloquear()
-    print(mi_telefono.estado, mi_telefono.estado_pan)
-    mi_telefono.encenderse()
-    print(mi_telefono.estado, mi_telefono.estado_pan)
-    mi_telefono.desbloquear()
-    print(mi_telefono.estado, mi_telefono.estado_pan)
+    if __name__=='__main__':
+        telefono_nacho = Telefono("Nacho", "nokia", "ios", 12, 8, 500, 12345678)
+        mi_telefono = Telefono(2, "jose", "nokia", "ios", 12, 8, 500, 43131234)
+
+        print(Telefono.numeros_registrados)
+        mi_telefono.on_off()
+
+        mi_telefono.desbloquear()
+
+        mi_telefono.on_off()
+
+        mi_telefono.desbloquear()
+
 except Exception as e:
     print(e)
+
+except ValueError as e:
+    print(e)
+
+
