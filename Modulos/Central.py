@@ -14,6 +14,8 @@ class Central:
             raise ValueError("Este numero no existe")
         Central.telefonos_registrados[self.id_telefono] = telefono
 
+    def baja_id(selfself, telefono: Telefono):
+
 try:
     if __name__ == '__main__':
         telefono_nacho = Telefono("Nacho", "nokia", "ios", 12, 8, 500, 12345678)
