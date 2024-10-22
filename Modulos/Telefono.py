@@ -5,8 +5,8 @@ class Telefono:
     numeros_conectados = []
 
     def __init__(self, nombre, modelo, os, version_os, ram, almacenamiento, numero, estado = 0, estado_pantalla = 0, estado_red=0):
-        #if len(str(numero)) != 8:
-         #   raise ValueError("El numero ingresado es inválido")
+        if len(str(numero)) != 8:
+            raise ValueError("El numero ingresado es inválido") #a nacho no le funciono pero ahora si
 
         self.nombre = nombre
         self.modelo = modelo
@@ -76,5 +76,6 @@ except Exception as e:
 
 except ValueError as e:
     print(e)
+
 
 
