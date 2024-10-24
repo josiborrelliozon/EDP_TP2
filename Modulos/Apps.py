@@ -1,33 +1,39 @@
 from Telefono import *
+from prueba3 import nombre
+
+
 class App:
     def __init__(self, id_app, espacio, nombre_app):
         self.id_app = id_app
         self.espacio = espacio
         self.nombre = nombre_app
 
-
-class AppStore():
-    apps_instaladas = {}                         #aca poner todas las apps que vienen por default
+#Descargar una nueva app desde la tienda de aplicaciones.
+class AppStore(App):
+    apps_instaladas = {}    #aca poner todas las apps que vienen por default
+    contador  = 0
 
     @staticmethod
     def espacio_actual():
 
 
-    def __init__(self, id_app, nombre_app, numero: Telefono): #verificar que hay espacio en el celular
-
-        self.id_user = numero
+    def __init__(self, id_app, espacio, id_user: Telefono, nombre_app): #verificar que hay espacio en el celular
+        super().__innit__(espacio, id_app, nombre_app)
+        self.id_user = id_user
         self.id_app = id_app
         self.nombre_app = nombre_app
 
         AppStore.apps_instaladas[self.id_app] = self
+        AppStore.contador +=1
 
     def borrar_app(self, id_app):                                       #poner condicion que las apps default no se borren
         app_borrada = AppStore.apps_instaladas.pop(self.id_app)
         print(f'{app_borrada} fue eliminada')
 
+
 class Contactos():
     contactos_guardados ={}
-    def __init__(self, nombre, numero, correo):
+    def __init__(self, nombre, numero, correo ):
         if numero not in Telefono.numeros_registrados:
             raise ValueError("El telefono guardado no existe")
         super().__init__()

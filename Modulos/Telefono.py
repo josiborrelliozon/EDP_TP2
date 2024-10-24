@@ -4,10 +4,10 @@ class Telefono:
     numeros_registrados = []
     numeros_conectados = []
 
-    def __init__(self, nombre, modelo, os, version_os, ram, almacenamiento, numero, estado = 0, estado_pantalla = 0, estado_red=0):
+    def __init__(self, id_telefono, nombre, modelo, os, version_os, ram, almacenamiento, numero, estado = 0, estado_pantalla = 0, estado_red=0):
         if len(str(numero)) != 8:
             raise ValueError("El numero ingresado es inválido") #a nacho no le funciono pero ahora si
-
+        self.id_telefono = id_telefono
         self.nombre = nombre
         self.modelo = modelo
         self.os = os
@@ -20,7 +20,7 @@ class Telefono:
         self.estado_red = estado_red
         Telefono.numeros_registrados.append(self.numero)
 
-    def __repr__(self):
+    def __str__(self):
         return f'(nombre: {self.nombre}, modelo: {self.modelo} , numero: {self.numero})'
 
     def on_off(self):
@@ -61,7 +61,7 @@ try:
     if __name__=='__main__':
         telefono_nacho = Telefono("Nacho", "nokia", "ios", 12, 8, 500, 12345678)
         mi_telefono = Telefono(2, "jose", "nokia", "ios", 12, 8, 87654321)
-
+        print(telefono_nacho)
         print(Telefono.numeros_registrados)
         mi_telefono.on_off()
 
