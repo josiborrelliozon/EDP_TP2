@@ -10,8 +10,8 @@ class Telefono:
 
         self.nombre = nombre
         self.modelo = modelo
-        self.os = os
-        self.version_os = version_os
+        self.os = os #sistema operativo
+        self.version_os = version_os #sistema operativo
         self.ram = ram
         self.almacenamiento = almacenamiento
         self.numero = numero
@@ -26,34 +26,34 @@ class Telefono:
     def on_off(self):
         if self.estado == 0:
             self.estado = 1
-            print(f'Prendido: {self}')
+            print(f'Prendido: {self}')   #si está prendido, lo apaga. Si está apagado, lo prende
         else:
             self.estado = 0
             print(f'Apagado {self}')
 
     def desbloquear(self):
-        if self.estado ==1:
-            if self.estado_pantalla == 0:
-                self.estado_pantalla = 1
+        if self.estado ==1: #si el celular está prendido,
+            if self.estado_pantalla == 0: #si está bloqueado
+                self.estado_pantalla = 1 #lo desbloquea
                 print(f'Pantalla desbloqueada: {self}')
-            else:
-                self.estado_pantalla = 0
+            else: #si está desbloqueado,
+                self.estado_pantalla = 0 #lo bloquea
                 print(f'Pantalla bloqueada: {self}')
-        else:
-            raise Exception("El celular se encuentra apagado")
+        else: #si está apagado,
+            raise Exception("El celular se encuentra apagado") #cambiar esto (ta bien, no tiene mucho sentido)
 
     def conexion_red(self):
-        if self.estado == 1: #si esta prendido
-            if self.estado_red == 0:
-                self.estado_red = 1
+        if self.estado == 1: #si el celular está prendido
+            if self.estado_red == 0: #y el celular está en "modo avíon"
+                self.estado_red = 1 #conecta la red
                 print(f" {self.numero} activó conexión")
                 Telefono.numeros_conectados.append(self.numero)
-            else:
-                self.estado_red = 0
+            else: #si el celular está conectado a una red
+                self.estado_red = 0 #lo pone en "modo avión"
                 print(f" {self.numero} desactivó conexión")
                 Telefono.numeros_conectados.remove(self.numero)
 
-        else:
+        else: #si el celular está apagado
             print(f" {self.numero}: Para conectar a la red debe encenderse el telefono ")
 
 
