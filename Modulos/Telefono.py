@@ -1,5 +1,5 @@
 #from TP.EDP_TP2.Modulos.Apps import AppStore
-from EDP_TP2.Modulos.Apps import *
+#from EDP_TP2.Modulos.Apps import *
 
 
 

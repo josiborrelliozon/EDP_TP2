@@ -22,7 +22,7 @@ class Central:
 
 try:
     if __name__ == '__main__':
-        telefono_nacho = Telefono("Nacho", "nokia", "ios", 12, 8, 500, 12345678)
+        telefono_nacho = Telefono("Nacho", "nokia", "cubo", "nok", 8, 500, 12345678, 12345678, 21)
         print(Telefono.numeros_registrados)
         id1 = Central(1)
         id1.alta_id(telefono_nacho)
