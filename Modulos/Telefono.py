@@ -90,6 +90,9 @@ try:
         print(telefono_nacho.contactos)
         telefono_nacho.contactos.actualizar_contacto(1, "987654321" )
         print(telefono_nacho.contactos)
+        telefono_nacho.contactos.agregar_contacto("Jose Sarasqueta", "912201831", "js@itba.edu.ar", "Av Cabildo 1200")
+        print(telefono_nacho.contactos)
+
 
 
 except Exception as e:
