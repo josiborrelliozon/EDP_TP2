@@ -2,8 +2,6 @@ from Telefono import *
 from datetime import datetime
 from collections import deque
 
-
-
 class App:
     apps_existentes = []
     def __init__(self, id_app, espacio, nombre_app):
@@ -14,7 +12,7 @@ class App:
         App.apps_existentes.append(self.id_app)
 
 #Descargar una nueva app desde la tienda de aplicaciones.
-class AppStore(App):
+class AppStore():
     apps_instaladas = {}    #aca poner todas las apps que vienen por default
     espacio_libre  = 0
 
@@ -40,14 +38,6 @@ class AppStore(App):
     @classmethod
     def configurar_espacio_libre(cls, telefono: Telefono):
         cls.espacio_libre = telefono.almacenamiento  # Accede al atributo de instancia
-
-
-class Contactos():
-    def __init__(self):
-        self.contactos_guardados= {}
-    def agregar_contacto(self, nombre, numero, correo ):
-        if numero not in self.contactos_guardados.keys():
-            self.contactos_guardados[numero] = Contacto(nombre, numero, correo)
 
 
 

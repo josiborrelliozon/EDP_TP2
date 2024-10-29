@@ -1,7 +1,4 @@
-#from TP.EDP_TP2.Modulos.Apps import AppStore
-#from EDP_TP2.Modulos.Apps import *
-
-
+from Contactos import *
 
 #Un teléfono celular tiene al menos los siguientes atributos:
 #ID (único), Nombre, Modelo, Sistema Operativo y versión, capacidad de memoria RAM, capacidad de
@@ -29,8 +26,8 @@ class Telefono:
         self.estado_pantalla = estado_pantalla
         self.estado_red = estado_red
         self.contactos = Contactos()
-        self.telefono_app = Telefono()
-        self.appstore = AppStore()
+        #self.telefono_app = Telefono()
+        #self.appstore = AppStore()
 
 
         Telefono.numeros_registrados.append(self.numero)
@@ -72,28 +69,27 @@ class Telefono:
         else: #si el celular está apagado
             print(f" {self.numero}: Para conectar a la red debe encenderse el telefono ")
 
-class Contacto():
-    def __init__(self, nombre, numero, correo ):
-        self.nombre = nombre
-        self.numero= numero
-        self.correo = correo
 
-    def actualizar_contacto(self, nuevo_nombre, nuevo_numero, nuevo_correo):
-        self.nombre = nuevo_nombre
-        self.numero = nuevo_numero
-        self.correo = nuevo_correo
 try:
     if __name__=='__main__':
         telefono_nacho = Telefono(12, "Nacho", "Iphone", "X", "IOS", 20, 500, 12345678, 400 )
         mi_telefono = Telefono(2, "Jose", "Iphone", "X", "IOS", 20, 600, 87654321, 400)
         print(telefono_nacho)
         print(Telefono.numeros_registrados)
-        mi_telefono.on_off()
 
+        print(".....................Pruebo conexion a red................................")
+
+        mi_telefono.on_off()
         mi_telefono.conexion_red()
         telefono_nacho.conexion_red()
         print(Telefono.numeros_conectados)
 
+        print("..........................Pruebo Contactos............................")
+
+        telefono_nacho.contactos.agregar_contacto("Jose Borrelli", "123456789", "jb@itba.edu.ar", "Av Santa Fe 1200")
+        print(telefono_nacho.contactos)
+        telefono_nacho.contactos.actualizar_contacto(1, "987654321" )
+        print(telefono_nacho.contactos)
 
 
 except Exception as e:
