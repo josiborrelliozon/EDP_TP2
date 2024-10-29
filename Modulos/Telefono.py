@@ -22,9 +22,9 @@ class Telefono:
         self.almacenamiento = almacenamiento
         self.espacio_libre = espacio_libre
         self.numero = numero
-        self.estado = estado
-        self.estado_pantalla = estado_pantalla
-        self.estado_red = estado_red
+        self.estado = estado  #on/off
+        self.estado_pantalla = estado_pantalla #bloqueado/desbloqueado
+        self.estado_red = estado_red #modo avion on/off
         self.contactos = Contactos()
         #self.telefono_app = Telefono()
         #self.appstore = AppStore()
