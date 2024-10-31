@@ -5,16 +5,15 @@ class Contactos():
         self.contactos_guardados= {}
 
     def agregar_contacto(self, nombre, numero, correo, direccion ):
-        i = 1 # genera un id que va incrementandose al crear un nuevo contacto
-        if numero not in self.contactos_guardados:
-            self.contactos_guardados[i] = Contacto(nombre, numero, correo, direccion)
-            i+= 1
+
+        if nombre not in self.contactos_guardados.keys():
+            self.contactos_guardados[nombre] = Contacto(nombre, numero, correo, direccion)
         else:
             raise ValueError('El contacto ya existe')
 
-    def actualizar_contacto(self, id, numero= None, nombre=None, correo=None, direccion=None):
-        if id in self.contactos_guardados.keys(): #checkea que el id del contcto que quiero modificar existe
-            contacto = self.contactos_guardados[id]
+    def actualizar_contacto(self, numero= None, nombre=None, correo=None, direccion=None):
+        if nombre in self.contactos_guardados.keys(): #checkea que el id del contcto que quiero modificar existe
+            contacto = self.contactos_guardados[nombre]
             if numero:
                 contacto.numero = numero
             if nombre:
@@ -45,7 +44,8 @@ class Contacto:
 
 if __name__ == '__main__':
     contactos = Contactos()
-    contactos.agregar_contacto("Juan Perez", "123456789", "juan@example.com", "Av Las Heras")
+    contactos.agregar_contacto("Juan Perez", "12345678", "juan@example.com", "Av Las Heras")
+    contactos.agregar_contacto("Jose S", "98765432", "juan@example.com", "Av Las Heras")
     print(contactos.contactos_guardados)
     contactos.actualizar_contacto("123456789", "Johnny", "<EMAIL>")
     print(contactos.contactos_guardados)
