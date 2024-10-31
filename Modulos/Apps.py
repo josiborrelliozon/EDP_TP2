@@ -2,43 +2,7 @@ from Telefono import *
 from datetime import datetime
 from collections import deque
 
-class App:
-    apps_existentes = []
-    def __init__(self, id_app, espacio, nombre_app):
-        self.id_app = id_app
-        self.espacio = espacio
-        self.nombre = nombre_app
-
-        App.apps_existentes.append(self.id_app)
-
-#Descargar una nueva app desde la tienda de aplicaciones.
-class AppStore():
-    apps_instaladas = {}    #aca poner todas las apps que vienen por default
-    espacio_libre  = 0
-
-    def __init__(self, id_app, espacio, id_user,nombre_app): #verificar que hay espacio en el celular
-        super().__innit__(espacio, id_app, nombre_app)
-        if  AppStore.espacio_libre < espacio :
-            raise ValueError("No hay espacio suficiente")
-        if id_app not in App.apps_existentes:
-            raise ValueError("Esta app no existe")
-        self.id_user = id_user
-        self.id_app = id_app
-        self.nombre_app = nombre_app
-        self.espacio = espacio
-
-        AppStore.apps_instaladas[self.id_app] = self
-        AppStore.espacio_libre -= self.espacio
-
-    def borrar_app(self, id_app):                                       #poner condicion que las apps default no se borren
-        app_borrada = AppStore.apps_instaladas.pop(self.id_app)
-        AppStore.espacio_libre += self.espacio
-        print(f'{app_borrada} fue eliminada')
-
-    @classmethod
-    def configurar_espacio_libre(cls, telefono: Telefono):
-        cls.espacio_libre = telefono.almacenamiento  # Accede al atributo de instancia
-
+#hacer app de batalla naval
 
 
 class TelefonoApp():

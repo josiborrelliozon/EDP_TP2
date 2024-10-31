@@ -1,14 +1,17 @@
 from Contactos import *
+from EDP_TP2.Modulos.AppsStore import AppStore
+
 
 #Un teléfono celular tiene al menos los siguientes atributos:
 #ID (único), Nombre, Modelo, Sistema Operativo y versión, capacidad de memoria RAM, capacidad de
 #almacenamiento y número telefónico.
+
 class Telefono:
 
     numeros_registrados = []
     numeros_conectados = []
 
-    def __init__(self,  id_telefono, nombre, modelo, os, version_os, ram, almacenamiento, numero, espacio_libre, estado = 0, estado_pantalla = 0, estado_red=0): #PONER CONFIGURACION, mensajes_app
+    def __init__(self,  id_telefono, nombre, modelo, os, version_os, ram, almacenamiento, numero, espacio_libre = 50,  estado = 0, estado_pantalla = 0, estado_red=0): #PONER CONFIGURACION, mensajes_app
         if len(str(numero)) != 8:
             raise ValueError("El numero ingresado es inválido") #a nacho no le funciono pero ahora si
         if espacio_libre > almacenamiento:
@@ -27,11 +30,16 @@ class Telefono:
         self.estado_red = estado_red #modo avion on/off
         self.contactos = Contactos()
         #self.telefono_app = Telefono()
-        #self.appstore = AppStore()
+        self.appstore = AppStore()
 
 
         Telefono.numeros_registrados.append(self.numero)
 
+    def instalar_app(self,nombre): #wrapper
+        self.appstore.instalar_app(nombre,self.almacenamiento)
+
+    def borrar_app (self,nombre):
+        self.appstore.borrar_app(nombre, self.almacenamiento)
 
     def __str__(self):
         return f'(nombre: {self.nombre}, modelo: {self.modelo} , numero: {self.numero})'
@@ -70,6 +78,7 @@ class Telefono:
             print(f" {self.numero}: Para conectar a la red debe encenderse el telefono ")
 
 
+
 try:
     if __name__=='__main__':
         telefono_nacho = Telefono(12, "Nacho", "Iphone", "X", "IOS", 20, 500, 12345678, 400 )
@@ -87,10 +96,11 @@ try:
         print("..........................Pruebo Contactos............................")
 
         telefono_nacho.contactos.agregar_contacto("Jose Borrelli", "123456789", "jb@itba.edu.ar", "Av Santa Fe 1200")
-        print(telefono_nacho.contactos)
-        telefono_nacho.contactos.actualizar_contacto(1, "987654321" )
-        print(telefono_nacho.contactos)
         telefono_nacho.contactos.agregar_contacto("Jose Sarasqueta", "912201831", "js@itba.edu.ar", "Av Cabildo 1200")
+        print(telefono_nacho.contactos)
+        #telefono_nacho.contactos.actualizar_contacto(1, "987654321" )
+        print(telefono_nacho.contactos)
+
         print(telefono_nacho.contactos)
 
 
