@@ -1,5 +1,4 @@
 
-from Telefono import *
 
 class App():
     def __init__(self, nombre, espacio):

@@ -1,5 +1,6 @@
 from Telefono import *
 
+
 class Central:
     telefonos_registrados = {}
     llamadas_en_curso = []

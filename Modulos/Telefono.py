@@ -1,8 +1,7 @@
-from multiprocessing.managers import Value
-
 from Contactos import *
 from AppStore import *
 from Llamadas import *
+
 
 
 #Un teléfono celular tiene al menos los siguientes atributos:
@@ -32,7 +31,6 @@ class Telefono:
         self.estado_pantalla = estado_pantalla #bloqueado/desbloqueado
         self.estado_red = estado_red #modo avion on/off
         self.contactos = Contactos()
-        self.incomming = False
         self.telefono_app = TelefonoApp()
         self.appstore = AppStore()
 
@@ -77,13 +75,13 @@ class Telefono:
 
     # Metodos Llamadas
     def llamar(self, numero):
-        if self.estado_red == 0:
+        if self.estado_red == 0 or self.estado == 0:
             return ValueError("El celular no esta conectado a la red")
         self.telefono_app.llamar(self.numero, numero)
 
     def atender(self):
-        if self.incomming == False:
-            raise ValueError("No hay llamadas entrantes")
+        if self.estado_red == 0 or self.estado == 0:
+            raise ValueError("")
         else:
             self.telefono_app.atender()
 
@@ -118,8 +116,8 @@ try:
 
         mi_telefono.on_off()
         mi_telefono.conexion_red()
-        telefono_nacho.conexion_red()
         print(Telefono.numeros_conectados)
+        print(telefono_nacho.estado_red)
 
         print("..........................Pruebo Contactos............................")
 
@@ -132,6 +130,9 @@ try:
         print("..........................Pruebo AppStore............................")
         telefono_nacho.instalar_app("instagram")
 
+        print("..........................Pruebo Telefono............................")
+
+        telefono_nacho.llamar(921) #pruebo existencia del telfono
 
 
 except Exception as e:

@@ -1,5 +1,5 @@
 import csv
-
+import matplotlib.pyplot as plt
 app =[]
 Category =[]
 Rating = []
@@ -31,10 +31,23 @@ with open('Play Store Data.csv', newline='', encoding='utf-8') as archivo:
         Last_Updated.append(fila[10])
         Current_Ver.append(fila[11])
         Android_Ver.append(fila[12])
+    app.pop(0)
+    Rating.pop(0)
 
 if __name__=='__main__':
-    print(Category)
-    print('\n')
-    print(Current_Ver)
-    print('\n')
+    apps_ratings = list(zip(app, Rating))
+    top_apps = sorted(apps_ratings, key=lambda x: x[1], reverse=True)
+    apps = []
+    rating = []
+    for i in range(5):
+        apps.append(top_apps[i][0])
+        rating.append(float(top_apps[i][1]))
+    print(apps)
+    print(rating)
+    plt.bar(apps, rating)
+    plt.title('Ratings de Aplicaciones')
+    plt.xlabel('Aplicaciones')
+    plt.ylabel('Ratings')
+    plt.show()
+
 
