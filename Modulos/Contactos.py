@@ -24,7 +24,7 @@ class Contactos():
             print(f"No se encontró un contacto con el numero {numero}.")
 
     def __str__(self):
-        return f'Info de contactos: ({self.contactos_guardados.values()})'
+        return f'Info de contactos: ({self.contactos_guardados})'
 
 # atributos que debe tener un contacto
 class Contacto:

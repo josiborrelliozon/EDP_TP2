@@ -6,11 +6,14 @@ class App():
         self.nombre = nombre
         self.espacio = espacio
 
+    def __repr__(self):
+        return f'{self.nombre}, espacio = {self.espacio} Gb'
+
 class AppStore():
 
     def __init__(self):
         self.apps_instaladas = {}
-        self.apps_disponibles = {} #no instaladas pero existentes, cuando hago spotifyy poner aca
+        self.apps_disponibles = {"instagram": App("instagram", 50)} #no instaladas pero existentes, cuando hago spotifyy poner aca
 
     def instalar_app(self, nombre, espacio):
         if nombre not in self.apps_disponibles.keys():
@@ -26,21 +29,23 @@ class AppStore():
 
 
     def borrar_app(self, nombre):
-        if nombre not in self.apps_instaladas:
-            raise ValueError("Esta app no existe")
-        valor_eliminado = self.apps_instaladas.pop(nombre)
-        print(f'{nombre} borrada con exito')
+        if nombre not in self.apps_instaladas.keys():
+            raise ValueError("Esta app no se encuentra instalada")
+        else:
+            valor_eliminado = self.apps_instaladas.pop(nombre)
+            self.apps_instaladas[nombre] = valor_eliminado
+            print(f'{nombre} borrada con exito')
 
-    @staticmethod
-    def hay_espacio(espacio, tamano_app):
-        return espacio - tamano_app > 0
+    def hay_espacio(self, espacio_disponible, tamano_app):
+        return espacio_disponible >= tamano_app
 
     
 try:
     if __name__ == '__main__':
-        App('spotify',12)
-        celu = AppStore()
-        celu.instalar_app("spotify")
+        #App('spotify',12)
+        #celu = AppStore()
+        #celu.instalar_app("spotify")
+        print("ok")
 
 except ValueError as e:
     print(e)
