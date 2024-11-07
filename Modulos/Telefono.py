@@ -75,8 +75,12 @@ class Telefono:
 
     # Metodos Llamadas
     def llamar(self, numero):
-        if self.estado_red == 0 or self.estado == 0:
-            return ValueError("El celular no esta conectado a la red")
+        print("rama 2")
+        if self.estado_red == 0:
+            print("El celular no esta conectado a la red")
+            return
+
+
         self.telefono_app.llamar(self.numero, numero)
 
     def atender(self):
@@ -131,7 +135,7 @@ try:
         telefono_nacho.instalar_app("instagram")
 
         print("..........................Pruebo Telefono............................")
-
+        print(telefono_nacho.estado_red)
         telefono_nacho.llamar(921) #pruebo existencia del telfono
 
 
