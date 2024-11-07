@@ -1,6 +1,8 @@
 from Telefono import *
+
 class Central:
     telefonos_registrados = {}
+    llamadas_en_curso = []
 
     # Creo los ids desde la central
     def __init__(self, id_telefono):
