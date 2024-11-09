@@ -1,6 +1,5 @@
 from Telefono import *
 
-
 class Central:
     telefonos_registrados = {}
     llamadas_en_curso = []
@@ -12,16 +11,18 @@ class Central:
         self.id_telefono = id_telefono
 
     # Asigno un id a un telefono
-    def alta_id(self, telefono: Telefono):
+    def alta_id(self, telefono):
         if telefono.numero not in Telefono.numeros_registrados:
             raise ValueError("Este numero no existe")
         Central.telefonos_registrados[self.id_telefono] = telefono
 
-    def baja_id(self, telefono: Telefono):
+    def baja_id(self, telefono):
         if telefono.numero not in Telefono.numeros_registrados:
             raise ValueError("Este numero no existe")
         id_eliminado = Central.telefonos_registrados.pop(self.id_telefono)
         print(f"{id_eliminado} fue eliminado")
+
+
 
 try:
     if __name__ == '__main__':

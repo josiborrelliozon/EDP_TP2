@@ -7,7 +7,6 @@ class TelefonoApp():
         self.llamadas = []
 
     def llamar(self, numero_propio, numero_entrante):
-        print("rama")#hacer wrapper
         for tupla_llamadas in Central.llamadas_en_curso:
             if (numero_entrante in tupla_llamadas) or (numero_propio in tupla_llamadas): #si el numero está en una llamada en curso
                 raise ValueError("Numero ocupado")

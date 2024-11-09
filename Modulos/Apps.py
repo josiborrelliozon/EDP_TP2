@@ -1,51 +1,76 @@
-from Apps import *
-#class MensajesApp():
- #   def __init__(self):
+import locale
 
-  #  def enviar_mensaje(self, mensaje, numero):
-   #     print(f'Enviando mensaje: {mensaje} a numero: {numero}')#e. Enviar y recibir mensajes de texto (SMS) a un número de destino.'
+locale.setlocale(locale.LC_TIME, 'es_ES')  #me pone las fechas relativas a Espana
+from datetime import datetime, timedelta
 
+class mailApp():
+   def __init__(self):
+      self.recibidos = []
 
-    #def recibir_mensaje(self, mensaje, numero):
-     #   print(f'Recibiendo mensaje: {mensaje} de numero: {numero}')#f. Ver bandeja de entrada de SMS e historial de llamadas.'
+   #Uso el metodo cargar mail solo para crear los mails recibidos
+   def cargar_mail(self, fecha_envio, remitente, destinatario, contenido, asunto = None, leido = False ):
+       mail = Email(fecha_envio, remitente, destinatario, contenido, asunto, leido)
+       self.recibidos.append(mail)
 
+   def buzon_mails(self):
+          # Ordeno los emails por fecha_recibido de más reciente a más antiguo
+        emails_ordenados = sorted(self.recibidos, key=lambda email: email.fecha_envio, reverse=True)
+        for email in emails_ordenados:
+            print(email)
 
-    #def eliminar_mensaje(self, mensaje):
-     #   print(f'Eliminando mensaje: {mensaje}')#g. Eliminar mensajes (SMS)'
-#class mailApp(App):
-  # def __init__(self, espacio, id_app, nombre_app):
-      # super().__innit__(espacio, id_app, nombre_app)
-      # self.recibidos = []
-      # self.enviados = []
-
-  # def pantalla_de_inicio(self):
-     #  for i in range(len(self.recibidos),-1):
-         #  print(self.recibidos[i])
 
 from datetime import datetime
 class Email():
-    def __init__(self, mail_id, remitente, destinatario, asunto, contenido):
-        self.mail.id = mail_id
+    def __init__(self, fecha_envio, remitente, destinatario, contenido, asunto = None, leido = False):
         self.remitente = remitente
         self.destinatario = destinatario
         self.asunto = asunto
         self.contenido = contenido
-        self.fecha = datetime.now()
+        self.fecha_envio = fecha_envio
         self.leido = False
 
-    def marcar_como_leido(self):
-        self.leido = True
+        # Formato de fecha directamente al inicializar
+        dia_semana = self.fecha_envio.strftime("%a")
+        fecha = self.fecha_envio.strftime("%d %b")
+        hora = self.fecha_envio.strftime("%H:%M")
+        tiempo_transcurrido = self.calcular_tiempo_transcurrido()
 
-    def obtener_info(self):
-        return f"Asunto: {self.asunto}, De: {self.remitente}, Para: {self.destinatario}, Fecha: {self.fecha}, Leído: {self.leido}"
+        self.fecha = f"{dia_semana}, {fecha}, {hora} ({tiempo_transcurrido})"
+
+    def calcular_tiempo_transcurrido(self):
+        ahora = datetime.now()
+        diferencia = ahora - self.fecha_envio
+
+        # Veo cuantos dias pasaron
+        if diferencia.days > 1:
+            return f"hace {diferencia.days} días"
+
+        elif diferencia.days == 1:
+            return "hace 1 día"
+
+    def __str__(self): #uso repr porque los mails van a a parecer en la lista recibidos y enviados
+        if self.leido:
+            estado = 'Leído'
+        else:
+            estado = 'No leído'
+        return (f'({self.fecha})  ({estado})  {self.remitente} -> {self.destinatario}. Asunto: {self.asunto}.'
+                f'           {self.contenido} ')
+
+    def __repr__(self): #uso repr porque los mails van a a parecer en la lista recibidos y enviados
+        if self.leido:
+            estado = 'Leído'
+        else:
+            estado = 'No leído'
+        return (f'({self.fecha})  ({estado})  {self.remitente} -> {self.destinatario}. Asunto: {self.asunto}.'
+                f'           {self.contenido} ')
 
 
-#try:
- #   if __name__ == '__main__':
-  #      mi_telefono = Telefono(2, "jose", "nokia", "ios", 12, 8, 87654321)
-   #     JoseFranciscoITBA = Contactos("Jose Francisco ITBA",  87654321, "jsarasqueta@hotmail.com")
-
-#except ValueError as e:
- #   print(e)
+if __name__ == '__main__':
+    nachomail = mailApp()
+    nachomail.cargar_mail(datetime(2024,10, 10, 1),"agus@gmail.com", "nacho@gmail.com", "Estamos muy complicados con el TP. Que hacemos?", "TP Estructuras")
+    nachomail.cargar_mail(datetime(2024,11,7, 12),"jose@gmail.com", "nacho@gmail.com", "Hay que pedirle ayuda a Fede. Abrazo.", "RE: TP Estructuras" )
+    nachomail.cargar_mail(datetime(2023, 11, 7, 12), "jose@gmail.com", "nacho@gmail.com","Adjunto a continuacion la tabla de datos", "Parcial de Quimica")
+    nachomail.cargar_mail(datetime.now()- timedelta(days=1), "pedro@hotmail", "nacho@gmail.com", "te invitamos al partido del sabado", "Partido Sabado")
+    nachomail.buzon_mails()
 
 

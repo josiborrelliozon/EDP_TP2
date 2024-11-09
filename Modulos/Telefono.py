@@ -1,6 +1,7 @@
 from Contactos import *
 from AppStore import *
 from Llamadas import *
+from Central import *
 
 
 
@@ -16,8 +17,9 @@ class Telefono:
     def __init__(self,  id_telefono, nombre, modelo, os, version_os, ram, almacenamiento, numero, espacio_libre = 50,  estado = 0, estado_pantalla = 0, estado_red=0): #PONER CONFIGURACION, mensajes_app
         if len(str(numero)) != 8:
             raise ValueError("El numero ingresado es inválido") #a nacho no le funciono pero ahora si
-        if espacio_libre > almacenamiento:
-            raise ValueError("Espacio libre debe ser menor al almacenamiento")
+        if numero in Telefono.numeros_registrados:
+            raise ValueError("El numero ingresado ya existe")
+
         self.id_telefono = id_telefono
         self.nombre = nombre
         self.modelo = modelo
@@ -37,7 +39,7 @@ class Telefono:
 
         Telefono.numeros_registrados.append(self.numero)
 
-    def __str__(self):
+    def __repr__(self):  #se usa para una representación detallada del objeto, ideal para depuración y cuando un objeto se muestra en una lista o diccionari
         return f'(nombre: {self.nombre}, modelo: {self.modelo} , numero: {self.numero})'
 
     def on_off(self):
@@ -75,11 +77,9 @@ class Telefono:
 
     # Metodos Llamadas
     def llamar(self, numero):
-        print("rama 2")
         if self.estado_red == 0:
-            print("El celular no esta conectado a la red")
+            print("El celular no esta conectado a la red")      #hacer un ValueError!!!!!!!!!!!!!!!
             return
-
 
         self.telefono_app.llamar(self.numero, numero)
 
@@ -109,19 +109,31 @@ class Telefono:
     def actualizar_contacto(self, numero, nombre, correo = None, direccion = None):
         self.contactos.actualizar_contacto(numero, correo, direccion)
 
+
+
 try:
     if __name__=='__main__':
         telefono_nacho = Telefono(12, "Nacho", "Iphone", "X", "IOS", 20, 500, 12345678, 400 )
-        mi_telefono = Telefono(2, "Jose", "Iphone", "X", "IOS", 20, 600, 12345678, 400)
+        telefono_jose = Telefono(2, "Jose", "Iphone", "X", "IOS", 20, 600, 87654321, 400)
+        telefono_nacho.on_off()
         print(telefono_nacho)
         print(Telefono.numeros_registrados)
 
         print(".....................Pruebo conexion a red................................")
 
-        mi_telefono.on_off()
-        mi_telefono.conexion_red()
+        telefono_jose.on_off()
+        telefono_jose.conexion_red()
         print(Telefono.numeros_conectados)
         print(telefono_nacho.estado_red)
+
+        print("..........................Pruebo Central............................")
+
+        print(Telefono.numeros_registrados)
+        id1 = Central(1)
+        telefono_agus = Telefono("Agus", "nokia", "cubo", "nok", 8, 500, 12, 11112222, 21)
+        print(Telefono.numeros_registrados)
+        id1.alta_id(telefono_agus)  #por que desde Central funciona y aca no
+
 
         print("..........................Pruebo Contactos............................")
 
@@ -135,8 +147,14 @@ try:
         telefono_nacho.instalar_app("instagram")
 
         print("..........................Pruebo Telefono............................")
-        print(telefono_nacho.estado_red)
-        telefono_nacho.llamar(921) #pruebo existencia del telfono
+        print(telefono_nacho.estado_red) # 0
+        telefono_nacho.llamar(921) #pruebo condicion de conexion a la red
+        telefono_nacho.conexion_red()
+        telefono_nacho.llamar(921) #pruebo condicion de numero valido
+        #veo a que telefono puedo llamar
+        print(Central.telefonos_registrados)
+
+
 
 
 except Exception as e:
