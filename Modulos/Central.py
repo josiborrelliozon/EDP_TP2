@@ -4,21 +4,21 @@ class Central:
     telefonos_registrados = {}
     llamadas_en_curso = []
 
-    # Creo los ids desde la central
-    def __init__(self, id_telefono):
-        if id_telefono in self.telefonos_registrados:
+
+    def __init__(self, id_telefono): # Creadora de ids, verifica que los mismo no existan aun
+        if id_telefono in Central.telefonos_registrados.keys():
             raise ValueError("Id ya existente")
         self.id_telefono = id_telefono
 
-    # Asigno un id a un telefono
-    def alta_id(self, telefono):
+
+    def alta_id(self, telefono): # Asigno un id creado previamente a un telefono
         if telefono.numero not in Telefono.numeros_registrados:
             raise ValueError("Este numero no existe")
         Central.telefonos_registrados[self.id_telefono] = telefono
 
-    def baja_id(self, telefono):
+    def baja_id(self, telefono): # Se da de baja un id y se desregistra el telefono
         if telefono.numero not in Telefono.numeros_registrados:
-            raise ValueError("Este numero no existe")
+            raise ValueError("Este numero no se encuentra registrado")
         id_eliminado = Central.telefonos_registrados.pop(self.id_telefono)
         print(f"{id_eliminado} fue eliminado")
 
