@@ -15,7 +15,7 @@ class Central:
         if telefono.numero not in Telefono.numeros_registrados:
             raise ValueError("Este numero no existe")
         else:
-            Central.telefonos_registrados[self.id_telefono] = telefono
+            Central.telefonos_registrados[self.id_telefono] = telefono.numero #GUARDO EL NUMEOR O LA INFO DEL TEL?
 
     def baja_id(self): # Se da de baja un id y se desregistra el telefono
         if self.id_telefono not in Central.telefonos_registrados.keys():

@@ -1,5 +1,8 @@
 import time
 import random
+from collections import deque
+import queue
+
 
 
 class App:
@@ -45,6 +48,11 @@ class Playlist:
         canciones_str = "\n".join([f"{idx + 1}. {cancion}" for idx, cancion in enumerate(self.canciones)])
         return f"Playlist: {self.nombre}\n{canciones_str}\n{duracion_str}"
 
+class ColaReproduccion:
+    def __init__(self):
+        self.cola = deque()
+        self.capacidad = 100  #La capacidad máxima de la cola es 100 canciones.
+
 
 class SpotifyApp(App):
     canciones_creadas = []  # Lista estática de canciones creadas
@@ -55,6 +63,7 @@ class SpotifyApp(App):
         self.playlists = []  # Lista de playlists
         self._pausado = False
         self._cancion_actual = None
+        self.cola_reproduccion = ColaReproduccion()
 
     def agregar_cancion_guardada(self, cancion):
         # Verificar si la canción está en la lista de canciones creadas
@@ -67,6 +76,7 @@ class SpotifyApp(App):
         else:
             print(f"La canción {cancion} no está creada. No se puede guardar.")
 
+
     def eliminar_cancion_guardada(self, cancion):
         # Eliminar una canción de la lista de canciones guardadas
         if cancion in self.canciones_guardadas:
@@ -75,10 +85,12 @@ class SpotifyApp(App):
         else:
             print(f"La canción {cancion} no está en la lista de canciones guardadas.")
 
+
     def crear_playlist(self, nombre_playlist):
         nueva_playlist = Playlist(nombre_playlist)
         self.playlists.append(nueva_playlist)
         print(f"Playlist '{nombre_playlist}' creada.")
+
 
     def eliminar_playlist(self, nombre_playlist):
         # Eliminar una playlist de la lista de playlists
@@ -89,9 +101,9 @@ class SpotifyApp(App):
                 return
         print(f"No se encontró la playlist '{nombre_playlist}'.")
 
-    def agregar_cancion_a_playlist(self, nombre_playlist, cancion):
 
-        if cancion in SpotifyApp.canciones_creadas: # Verificar si la canción está en la lista de canciones creadas
+    def agregar_cancion_a_playlist(self, nombre_playlist, cancion):
+        if cancion in SpotifyApp.canciones_creadas:  # Verificar si la canción está en la lista de canciones creadas
             for playlist in self.playlists:
                 if playlist.nombre.lower() == nombre_playlist.lower():
                     if cancion not in playlist.canciones:
@@ -103,6 +115,7 @@ class SpotifyApp(App):
             print(f"No se encontró la playlist '{nombre_playlist}'.")
         else:
             print(f"La canción {cancion} no está creada. No se puede agregar a la playlist.")
+
 
     def eliminar_cancion_de_playlist(self, nombre_playlist, cancion):
         # Eliminar una canción de una playlist específica
@@ -116,6 +129,7 @@ class SpotifyApp(App):
                 return
         print(f"No se encontró la playlist '{nombre_playlist}'.")
 
+
     def ver_playlists(self):
         if not self.playlists:
             print("No hay playlists.")
@@ -123,6 +137,7 @@ class SpotifyApp(App):
             print("Playlists:")
             for idx, playlist in enumerate(self.playlists, 1):
                 print(f"{idx}. {playlist}")
+
 
     def ver_canciones_guardadas(self):
         if not self.canciones_guardadas:
@@ -132,6 +147,7 @@ class SpotifyApp(App):
             for idx, cancion in enumerate(self.canciones_guardadas, 1):
                 print(f"{idx}. {cancion}")
 
+
     def ver_canciones_creadas(self):
         if not SpotifyApp.canciones_creadas:
             print("No hay canciones creadas.")
@@ -139,6 +155,7 @@ class SpotifyApp(App):
             print("Canciones Creadas:")
             for idx, cancion in enumerate(SpotifyApp.canciones_creadas, 1):
                 print(f"{idx}. {cancion}")
+
 
     def ver_canciones_de_playlist(self, nombre_playlist):
         for playlist in self.playlists:
@@ -151,6 +168,7 @@ class SpotifyApp(App):
                         print(f"{idx}. {cancion}")
                 return
         print(f"No se encontró la playlist '{nombre_playlist}'.")
+
 
     def reproducir_playlist(self, nombre_playlist, aleatorio=False):
         for playlist in self.playlists:
@@ -170,6 +188,7 @@ class SpotifyApp(App):
                 return
         print(f"No se encontró la playlist '{nombre_playlist}'.")
 
+
     def reproducir_cancion_guardada(self, nombre_cancion):
         # Reproducir una canción de las canciones guardadas
         for cancion in self.canciones_guardadas:
@@ -179,8 +198,12 @@ class SpotifyApp(App):
                 return
         print(f"No se encontró la canción '{nombre_cancion}' en las canciones guardadas.")
 
+
     def reproducir_cancion(self, cancion):
         print(f"Reproduciendo: {cancion}")
+
+
+
 
 
 def menu():

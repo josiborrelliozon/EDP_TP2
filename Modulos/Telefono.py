@@ -3,8 +3,9 @@ from AppStore import *
 from Llamadas import *
 from Central import *
 from Mail import *
-
-
+from MensajesApp import *
+from Modulos.CalculadoraGrafica import CalculadoraGrafica
+import numpy as np
 
 #Un teléfono celular tiene al menos los siguientes atributos:
 #ID (único), Nombre, Modelo, Sistema Operativo y versión, capacidad de memoria RAM, capacidad de
@@ -39,13 +40,19 @@ class Telefono:
         self.telefono_app = TelefonoApp()
         self.appstore = AppStore()
         self.mail_app = mailApp()
+        self.mensajes_app = MensajesApp()
+        self.calculadora_grafica = CalculadoraGrafica()
 
 
         Telefono.numeros_registrados.append(self.numero)
 
+    def __str__(self):
+        return f'(nombre: {self.nombre}, modelo: {self.modelo} , numero: {self.numero})'
+
     def __repr__(self):  #se usa para una representación detallada del objeto, ideal para depuración y cuando un objeto se muestra en una lista o diccionari
         return f'(nombre: {self.nombre}, modelo: {self.modelo} , numero: {self.numero})'
 
+    # .........................................Metodos del telefono ..................................................................
     def on_off(self):
         if self.estado == 0:
             self.estado = 1
@@ -79,7 +86,8 @@ class Telefono:
         else: #si el celular está apagado
             print(f" {self.numero}: Para conectar a la red debe encenderse el telefono ")
 
-    # Metodos Llamadas
+    #  ....................................Wrappers con metodos de Llamadas..................................................................
+
     def llamar(self, numero):
         if self.estado_red == 0:
             print("El celular no esta conectado a la red")      #hacer un ValueError!!!!!!!!!!!!!!!
@@ -92,29 +100,105 @@ class Telefono:
             raise ValueError("")
         else:
             self.telefono_app.atender()
+    #FALTA CORTAR
 
+    #  ....................................Wrappers con metodos de AppStore...............................................................
 
-    # Metodos App Store
-    def instalar_app(self, nombre):  # wrapper
-        self.appstore.instalar_app(nombre, self.espacio_libre)
-        print(self.appstore.apps_instaladas)
+    def instalar_app(self, nombre):
+        if self.estado == 0:
+            raise ValueError("El celular se encuentra apagado")
+        elif self.estado_pantalla == 0:
+            raise ValueError("El celular se encuentra bloqueado")
+        elif self.estado_red == 0:
+            raise ValueError("El celular no esta conectado a la red")
+        else:
+            self.appstore.instalar_app(nombre, self.espacio_libre)
+            print(self.appstore.apps_instaladas)
         #aux = self.appstore.apps_instaladas
         #if nombre in aux:
             #self.espacio_libre -= aux[nombre]
             #print(f'Espacio libre restante {self.espacio_libre}')
 
-    def borrar_app(self, nombre):
-        self.appstore.borrar_app(nombre, self.espacio_libre)
+    def borrar_app(self, nombre): #borra el app si esta instalada y si el celular esta prendido y desbloqueado
+        if self.estado == 0:
+            raise ValueError("El celular se encuentra apagado")
+        elif self.estado_pantalla == 0:
+            raise ValueError("El celular se encuentra bloqueado")
+        else:
+            self.appstore.borrar_app(nombre, self.espacio_libre)
 
-    #Metodos de Contactos
-    def nuevo_contacto(self, nombre, numero, correo = None, direccion = None):
-        self.contactos.agregar_contacto(nombre, numero, correo, direccion)
+    #  ....................................Wrappers con metodos de Contactos................................................................
+
+    def nuevo_contacto(self, nombre, numero, correo = None, direccion = None): #agrega un nuevo contacto, verificando que el celular este desbloqueado y prendido
+        if self.estado == 0:
+            raise ValueError("El celular se encuentra apagado")
+        elif self.estado_pantalla == 0:
+            raise ValueError("El celular se encuentra bloqueado")
+        else:
+            self.contactos.agregar_contacto(nombre, numero, correo, direccion)
 
     def actualizar_contacto(self, numero, nombre, correo = None, direccion = None):
-        self.contactos.actualizar_contacto(numero, correo, direccion)
+        if self.estado == 0:
+            raise ValueError("El celular se encuentra apagado")
+        elif self.estado_pantalla == 0:
+            raise ValueError("El celular se encuentra bloqueado")
 
+        else:
+            self.contactos.actualizar_contacto(numero, correo, direccion)
 
+    #  ....................................Wrappers con metodos de App de Mensajes SMS................................................................
 
+    def enviar_sms(self, numero, mensaje): #envia un SMS verificando que el dispositivo se encuentre conectado a la red
+        if self.estado == 0:
+            raise ValueError("El celular se encuentra apagado")
+        elif self.estado_pantalla == 0:
+            raise ValueError("El celular se encuentra bloqueado")
+        elif self.estado_red == 0:
+            raise ValueError("El celular no esta conectado a la red")
+        else:
+            self.mensajes_app.enviar_sms(numero, mensaje)
+
+    def visualizar_entrada(self):  # Devuelve todos los SMS recibidos verificando que el dispositivo se encuentre conectado a la red
+        if self.estado == 0:
+            raise ValueError("El celular se encuentra apagado")
+        elif self.estado_pantalla == 0:
+            raise ValueError("El celular se encuentra bloqueado")
+        elif self.estado_red == 0:
+            raise ValueError("El celular no esta conectado a la red")
+        else:
+            self.mensajes_app.visualizar_entrada()
+
+    def cargar_mensaje(self, numero, mensaje, fecha): #Genera mensajes (simula que recibo mensajes)
+        if self.estado_red == 0:
+            raise ValueError("El celular no esta conectado a la red")
+        else:
+            self.mensajes_app.cargar_mensaje(numero, mensaje, fecha)
+
+    def eliminar_mensaje(self, numero, mensaje, fecha):  # Elimina mensajes recibidos
+        if self.estado == 0:
+            raise ValueError("El celular se encuentra apagado")
+        elif self.estado_pantalla == 0:
+            raise ValueError("El celular se encuentra bloqueado")
+        elif self.estado_red == 0:
+            raise ValueError("El celular no esta conectado a la red")
+        else:
+            self.mensajes_app.eliminar_mensaje(numero, mensaje, fecha)
+
+#  ....................................Wrappers con metodos de Mail.................................................
+
+    def cargar_mail(self, fecha_envio, remitente, destinatario, contenido, asunto=None, leido=False):
+
+            self.mail_app.cargar_mail(fecha_envio, remitente, destinatario, contenido, asunto, leido)
+
+    def buzon_mails(self):
+        if self.estado == 0:
+            raise ValueError("El celular se encuentra apagado")
+        elif self.estado_pantalla == 0:
+            raise ValueError("El celular se encuentra bloqueado")
+        elif self.estado_red == 0:
+            raise ValueError("El celular no esta conectado a la red")
+        else:
+            self.mail_app.buzon_mails()
 try:
     if __name__=='__main__':
         telefono_nacho = Telefono(12, "Nacho", "Iphone", "X", "IOS", 20, 500, 12345678, 400 )
@@ -165,6 +249,8 @@ try:
 
         print("..........................Pruebo Contactos............................")
 
+        telefono_nacho.desbloquear()
+
         telefono_nacho.nuevo_contacto("Jose Borrelli", 123456789, "jb@itba.edu.ar", "Av Santa Fe 1200")
         telefono_nacho.nuevo_contacto("Jose Sarasqueta", 912201831, "js@itba.edu.ar", "Av Cabildo 1200")
         print(telefono_nacho.contactos)
@@ -175,14 +261,22 @@ try:
         #telefono_nacho.instalar_app("spotify") # tengo que vincular app store con spotify
 
         print("..........................Pruebo Llamada............................")
-        print(telefono_nacho.estado_red) # 0
-        telefono_nacho.llamar(921) #pruebo condicion de conexion a la red
-        telefono_nacho.conexion_red()
-        telefono_nacho.llamar(921) #pruebo condicion de numero valido
-        #veo a que telefono puedo llamar
-        telefono_nacho.llamar(87654321)
-        print(Central.telefonos_registrados)
+        # print(telefono_nacho.estado_red) # 0
+        # telefono_nacho.llamar(921) #pruebo condicion de conexion a la red
+        # telefono_nacho.conexion_red()
+        # telefono_nacho.llamar(921) #pruebo condicion de numero valido
+        # #veo a que telefono puedo llamar
+        # telefono_nacho.llamar(87654321)
+        # print(Central.telefonos_registrados)
 
+        print("........................Pruebo Mensajes APP SMS............................")
+
+
+        print("..........................Pruebo Calculadora............................")
+        telefono_nacho.calculadora_grafica.calcular_polinomios('x**2 - 2*x + 1', 3000)
+        telefono_fede.calculadora_grafica.factorial(5)
+        telefono_agus.calculadora_grafica.normal(np.random.normal(loc=0, scale=1, size=1000))#genero data sets random
+        telefono_jose.calculadora_grafica.desvio([27,25,42,88,15,22,21,15,24,63,73,42,23,12,10,21,21,21,2,12,12,1,21,21,21])
 
 
 
