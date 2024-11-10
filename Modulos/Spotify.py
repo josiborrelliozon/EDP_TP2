@@ -1,18 +1,7 @@
 import time
 import random
-from collections import deque
 import queue
-
-
-
-class App:
-    def __init__(self, nombre, espacio):
-        self.nombre = nombre
-        self.espacio = espacio
-
-    def __str__(self):
-        return f'{self.nombre}, espacio = {self.espacio} Gb'
-
+from Apps import *
 
 class Cancion:
     def __init__(self, nombre, artista, duracion, genero):
@@ -48,10 +37,9 @@ class Playlist:
         canciones_str = "\n".join([f"{idx + 1}. {cancion}" for idx, cancion in enumerate(self.canciones)])
         return f"Playlist: {self.nombre}\n{canciones_str}\n{duracion_str}"
 
-class ColaReproduccion:
-    def __init__(self):
-        self.cola = deque()
-        self.capacidad = 100  #La capacidad máxima de la cola es 100 canciones.
+class ColaDeReproduccion: #Clase abstracta generadora de colas de reproduccion
+    def __init__(self, capacidad_maxima=100):
+        self.cola = queue.Queue(maxsize=capacidad_maxima) #Crea una cola con capacidad máxima de 100 canciones
 
 
 class SpotifyApp(App):
@@ -63,7 +51,36 @@ class SpotifyApp(App):
         self.playlists = []  # Lista de playlists
         self._pausado = False
         self._cancion_actual = None
-        self.cola_reproduccion = ColaReproduccion()
+        self.cola_reproduccion = ColaDeReproduccion() #Crea una instancia de Cola_De_Reproduccion
+
+#Primero muestro los metodos de cola
+    def agregar_a_cola_reproduccion(self, cancion):
+        # Agrega una canción a la cola de reproducción si no está llena.
+        if not self.cola_reproduccion.cola.full():
+            self.cola_reproduccion.cola.put(cancion)
+            print(f"Canción '{cancion.nombre}' agregada a la cola de reproducción.")
+        else:
+            print("La cola de reproducción está llena. No se puede agregar más canciones.")
+
+    def reproducir_cola(self):
+        # Reproduce todas las canciones de la cola de reproducción.
+        while not self.cola_reproduccion.cola.empty():
+            cancion = self.cola_reproduccion.cola.get()
+            if cancion:
+                self.reproducir_cancion(cancion)  # Reproducir la canción
+                time.sleep(cancion.duracion)  # Esperar durante la duración de la canción
+        print("La cola de reproducción está vacía.")
+
+    def ver_cola(self):
+        # Muestra las canciones en la cola de reproducción.
+        if not self.cola_reproduccion.cola.empty():
+            print("Canciones en la cola de reproducción:")
+            for idx, cancion in enumerate(list(self.cola_reproduccion.cola.queue), 1):
+                print(f"{idx}. {cancion}")
+        else:
+            print("La cola de reproducción está vacía.")
+
+#Acá muestro otros métodos con listas. Después se usan para la interfaz interactiva
 
     def agregar_cancion_guardada(self, cancion):
         # Verificar si la canción está en la lista de canciones creadas
@@ -147,7 +164,6 @@ class SpotifyApp(App):
             for idx, cancion in enumerate(self.canciones_guardadas, 1):
                 print(f"{idx}. {cancion}")
 
-
     def ver_canciones_creadas(self):
         if not SpotifyApp.canciones_creadas:
             print("No hay canciones creadas.")
@@ -201,8 +217,6 @@ class SpotifyApp(App):
 
     def reproducir_cancion(self, cancion):
         print(f"Reproduciendo: {cancion}")
-
-
 
 
 

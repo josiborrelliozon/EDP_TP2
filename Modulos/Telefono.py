@@ -14,14 +14,14 @@ import numpy as np
 class Telefono:
 
     numeros_registrados = [] #registra todos los numero creados
-    numeros_conectados = [] # registra todos los numero conectado con conexión a red activada
+    numeros_conectados = [] # registra todos los numeros con conexión a red activada
 
     def __init__(self,  id_telefono, nombre, modelo, os, version_os, ram, almacenamiento, numero, espacio_libre = 50,  estado = 0, estado_pantalla = 0, estado_red=0): #PONER CONFIGURACION, mensajes_app
         if len(str(numero)) != 8:
-            raise ValueError("El numero ingresado es inválido") #a nacho no le funciono pero ahora si
-        if numero in Telefono.numeros_registrados:
+            raise ValueError("El numero ingresado es inválido") 
+        if numero in Telefono.numeros_registrados: #se verifica que el número no se repita
             raise ValueError("El numero ingresado ya existe")
-        if espacio_libre > almacenamiento:
+        if espacio_libre > almacenamiento: #se verifica que el espacio libre no supere al almacenamiento
             raise ValueError("El espacio libre no puede ser mayor al almacenamiento")
 
         self.id_telefono = id_telefono
@@ -36,11 +36,11 @@ class Telefono:
         self.estado = estado  #on/off
         self.estado_pantalla = estado_pantalla #bloqueado/desbloqueado
         self.estado_red = estado_red #modo avion on/off
-        self.contactos = Contactos()
-        self.telefono_app = TelefonoApp()
-        self.appstore = AppStore()
-        self.mail_app = mailApp()
-        self.mensajes_app = MensajesApp()
+        self.contactos = Contactos() #viene por default en el telefono
+        self.telefono_app = TelefonoApp() #viene por default en el telefono
+        self.appstore = AppStore() #viene por default en el telefono
+        self.mail_app = mailApp() #viene por default en el telefono
+        self.mensajes_app = MensajesApp() #viene por default en el telefono
         self.calculadora_grafica = CalculadoraGrafica()
 
 
