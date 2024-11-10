@@ -55,42 +55,43 @@ if __name__=='__main__':
     apps = []
     rating = []
     cadena_unida = ''
-    for i in range(100):
+    for i in range(300):
         apps.append(top_apps[i][0])
         rating.append(float(top_apps[i][1]))
-    cadena_unida = ' '.join(apps)
+    apps_filtradas = [palabra for palabra in apps if len(palabra) > 10]
+    cadena_unida = ' '.join(apps_filtradas)
+    print(cadena_unida)
     nube = WordCloud(width=800, height=400, background_color='white').generate(cadena_unida)
     plt.figure(figsize=(10, 5))
     plt.imshow(nube, interpolation='bilinear')
     plt.axis('off')
     plt.show()
 
-    # piechart con las instalaciones de las categorias
-    # piechart = list(zip(Category, Installs))
-    # categorias = list(set(Category))
-    # r = len(Installs)
-    # c = len(categorias)
-    # instalaciones = [0]*c
-    # for j in range(c):
-    #     for i in range(r):
-    #         if piechart[i][0] == categorias[j]:
-    #             instalaciones[j] += float((((piechart[i][1])[:-1]).replace(",", "")).replace('','0'))
-    # sortear = list(zip(categorias, instalaciones))
-    # top_ins = sorted(sortear, key=lambda x: x[1], reverse=True)
-    # cate = []
-    # dw = []
-    # tot = 0
-    # print(top_ins)
-    # for i in range(5):
-    #     cate.append(top_ins[i][0])
-    #     dw.append(float(top_ins[i][1]))
-    # for i in range(5, c):
-    #     tot += float(top_ins[i][1])
-    # cate.append('otras')
-    # dw.append(tot)
-    # plt.pie(dw, labels=cate, autopct='%1.1f%%', startangle=90)
-    # plt.title('Distribución de instalaciones por Categoría')
-    # plt.show()
+    #piechart con las instalaciones de las categorias
+    piechart = list(zip(Category, Installs))
+    categorias = list(set(Category))
+    r = len(Installs)
+    c = len(categorias)
+    instalaciones = [0]*c
+    for j in range(c):
+        for i in range(r):
+            if piechart[i][0] == categorias[j]:
+                instalaciones[j] += float((((piechart[i][1])[:-1]).replace(",", "")).replace('','0'))
+    sortear = list(zip(categorias, instalaciones))
+    top_ins = sorted(sortear, key=lambda x: x[1], reverse=True)
+    cate = []
+    dw = []
+    tot = 0
+    for i in range(5):
+        cate.append(top_ins[i][0])
+        dw.append(float(top_ins[i][1]))
+    for i in range(5, c):
+        tot += float(top_ins[i][1])
+    cate.append('otras')
+    dw.append(tot)
+    plt.pie(dw, labels=cate, autopct='%1.1f%%', startangle=90)
+    plt.title('Distribución de instalaciones por Categoría')
+    plt.show()
 
     #
     # t = len(Rating)
