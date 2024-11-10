@@ -152,7 +152,7 @@ try:
         id1 = Central(1)
         telefono_agus = Telefono("Agus", "nokia", "cubo", "nok", 8, 500, 12, 11112222, 21)
         print(Telefono.numeros_registrados)
-        id1.alta_id(telefono_agus)  #por que desde Central funciona y aca no
+        #id1.alta_id(telefono_nacho)  #por que desde Central funciona y aca no
 
 
         print("..........................Pruebo Contactos............................")

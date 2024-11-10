@@ -1,7 +1,7 @@
 from Telefono import *
 
 class Central:
-    telefonos_registrados = {}
+    telefonos_registrados = {}  #uso diccionario para que no se repitan los contactos, usando el numero como key
     llamadas_en_curso = []
 
 
