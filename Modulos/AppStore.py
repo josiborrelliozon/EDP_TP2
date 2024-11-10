@@ -5,6 +5,9 @@ class App():
         self.nombre = nombre
         self.espacio = espacio
 
+    def __str__(self):
+        return f'{self.nombre}, espacio = {self.espacio} Gb'
+
     def __repr__(self):
         return f'{self.nombre}, espacio = {self.espacio} Gb'
 
@@ -12,7 +15,9 @@ class AppStore():
 
     def __init__(self):
         self.apps_instaladas = {}
-        self.apps_disponibles = {"instagram": App("instagram", 50)} #no instaladas pero existentes, cuando hago spotifyy poner aca
+        self.apps_disponibles = {} #no instaladas pero existentes, cuando hago spotifyy poner aca
+
+
 
     def instalar_app(self, nombre, espacio):
         if nombre not in self.apps_disponibles.keys():
@@ -41,9 +46,9 @@ class AppStore():
     
 try:
     if __name__ == '__main__':
-        #App('spotify',12)
-        #celu = AppStore()
-        #celu.instalar_app("spotify")
+        App('spotify',12)
+        celu = AppStore()
+        celu.instalar_app("spotify")
         print("ok")
 
 except ValueError as e:

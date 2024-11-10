@@ -3,19 +3,32 @@ import locale
 locale.setlocale(locale.LC_TIME, 'es_ES')  #me pone las fechas relativas a Espana
 from datetime import datetime, timedelta
 
+
 class mailApp():
-   def __init__(self):
-      self.recibidos = []
+    def __init__(self):
+        self.recibidos = []
+        self.noleidos = []
+        self.leidos = []
 
-   #Uso el metodo cargar mail solo para crear los mails recibidos
-   def cargar_mail(self, fecha_envio, remitente, destinatario, contenido, asunto = None, leido = False ):
-       mail = Email(fecha_envio, remitente, destinatario, contenido, asunto, leido)
-       self.recibidos.append(mail)
+    def cargar_mail(self, fecha_envio, remitente, destinatario, contenido, asunto=None, leido=False):
+        mail = Email(fecha_envio, remitente, destinatario, contenido, asunto, leido)
+        self.recibidos.append(mail)
+        if not mail.leido:
+            self.noleidos.append(mail)
+        else:
+            self.leidos.append(mail)
 
-   def buzon_mails(self):
-          # Ordeno los emails por fecha_recibido de más reciente a más antiguo
-        emails_ordenados = sorted(self.recibidos, key=lambda email: email.fecha_envio, reverse=True)
-        for email in emails_ordenados:
+    def buzon_mails(self):
+        # Ordenar los emails no leídos y leídos por fecha de más reciente a más antigua
+        noleidos_ordenados = sorted(self.noleidos, key=lambda email: email.fecha_envio, reverse=True)
+        leidos_ordenados = sorted(self.leidos, key=lambda email: email.fecha_envio, reverse=True)
+
+        print("Correos No Leídos:")
+        for email in noleidos_ordenados:
+            print(email)
+
+        print("\nCorreos Leídos:")
+        for email in leidos_ordenados:
             print(email)
 
 
@@ -27,7 +40,7 @@ class Email():
         self.asunto = asunto
         self.contenido = contenido
         self.fecha_envio = fecha_envio
-        self.leido = False
+        self.leido = leido
 
         # Formato de fecha directamente al inicializar
         dia_semana = self.fecha_envio.strftime("%a")
@@ -67,10 +80,14 @@ class Email():
 
 if __name__ == '__main__':
     nachomail = mailApp()
-    nachomail.cargar_mail(datetime(2024,10, 10, 1),"agus@gmail.com", "nacho@gmail.com", "Estamos muy complicados con el TP. Que hacemos?", "TP Estructuras")
+    nachomail.cargar_mail(datetime(2024,10, 10, 1),"agus@gmail.com", "nacho@gmail.com", "Estamos muy complicados con el TP. Que hacemos?", "TP Estructuras", True)
     nachomail.cargar_mail(datetime(2024,11,7, 12),"jose@gmail.com", "nacho@gmail.com", "Hay que pedirle ayuda a Fede. Abrazo.", "RE: TP Estructuras" )
     nachomail.cargar_mail(datetime(2023, 11, 7, 12), "jose@gmail.com", "nacho@gmail.com","Adjunto a continuacion la tabla de datos", "Parcial de Quimica")
     nachomail.cargar_mail(datetime.now()- timedelta(days=1), "pedro@hotmail", "nacho@gmail.com", "te invitamos al partido del sabado", "Partido Sabado")
+    nachomail.cargar_mail(datetime.now() - timedelta(days=1), "luis@itba.edu.ar", "nacho@gmail.com",
+                          "La presentacion es el jueves, tenemos que tener el pwp preparado. Te adjunto los avances.", "TP Estructuras", True)
     nachomail.buzon_mails()
+
+
 
 

@@ -2,6 +2,7 @@ from Contactos import *
 from AppStore import *
 from Llamadas import *
 from Central import *
+from Mail import *
 
 
 
@@ -35,6 +36,7 @@ class Telefono:
         self.contactos = Contactos()
         self.telefono_app = TelefonoApp()
         self.appstore = AppStore()
+        self.mail_app = mailApp()
 
 
         Telefono.numeros_registrados.append(self.numero)
@@ -121,10 +123,28 @@ try:
 
         print(".....................Pruebo conexion a red................................")
 
-        telefono_jose.on_off()
-        telefono_jose.conexion_red()
+        telefono_jose.on_off() #prendo telefono
+        telefono_jose.conexion_red() #conecto a la red
         print(Telefono.numeros_conectados)
         print(telefono_nacho.estado_red)
+
+        print("..........................Pruebo Mail............................")
+
+        #cargo los mails
+        telefono_nacho.mail_app.cargar_mail(datetime(2024, 10, 10, 1), "agus@gmail.com", "nacho@gmail.com",
+                              "Estamos muy complicados con el TP. Que hacemos?", "TP Estructuras", True)
+        telefono_nacho.mail_app.cargar_mail(datetime(2024, 11, 7, 12), "jose@gmail.com", "nacho@gmail.com",
+                              "Hay que pedirle ayuda a Fede. Abrazo.", "RE: TP Estructuras")
+        telefono_nacho.mail_app.cargar_mail(datetime(2023, 11, 7, 12), "jose@gmail.com", "nacho@gmail.com",
+                              "Adjunto a continuacion la tabla de datos", "Parcial de Quimica")
+        telefono_nacho.mail_app.cargar_mail(datetime.now() - timedelta(days=1), "pedro@hotmail", "nacho@gmail.com",
+                              "te invitamos al partido del sabado", "Partido Sabado")
+        telefono_nacho.mail_app.cargar_mail(datetime.now() - timedelta(days=1), "luis@itba.edu.ar", "nacho@gmail.com",
+                              "La presentacion es el jueves, tenemos que tener el pwp preparado. Te adjunto los avances.",
+                              "TP Estructuras", True)
+
+        #Muestra buzon con mails cargados, ordenados por llegada reciente y apareciendo primero los no leidos
+        telefono_nacho.mail_app.buzon_mails()
 
         print("..........................Pruebo Central............................")
 

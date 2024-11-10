@@ -90,8 +90,8 @@ class SpotifyApp(App):
         print(f"No se encontró la playlist '{nombre_playlist}'.")
 
     def agregar_cancion_a_playlist(self, nombre_playlist, cancion):
-        # Verificar si la canción está en la lista de canciones creadas
-        if cancion in SpotifyApp.canciones_creadas:
+
+        if cancion in SpotifyApp.canciones_creadas: # Verificar si la canción está en la lista de canciones creadas
             for playlist in self.playlists:
                 if playlist.nombre.lower() == nombre_playlist.lower():
                     if cancion not in playlist.canciones:
