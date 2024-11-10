@@ -1,7 +1,6 @@
 
-# cada telefono tiene su diccionario de contactos creado en:
-class Contactos():
-    def __init__(self):
+class Contactos():  #viene por Default en el telefono -> creo instancias de esta clase a través de un atributo en Telefono
+    def __init__(self): #crea diccionarios donde se almacenan los contactos, usa los numeros como keys
         self.contactos_guardados= {}
 
     def agregar_contacto(self, nombre, numero, correo, direccion ):
@@ -27,7 +26,7 @@ class Contactos():
         return f'Info de contactos: ({self.contactos_guardados})'
 
 # atributos que debe tener un contacto
-class Contacto:
+class Contacto: #clase teórica
     def __init__(self, nombre, numero, correo = None, direccion = None):  #direccion y correo son opcionales
         self.nombre = nombre
         self.numero = numero

@@ -4,15 +4,13 @@ locale.setlocale(locale.LC_TIME, 'es_ES')  #me pone las fechas relativas a Espan
 from datetime import datetime, timedelta
 
 
-class mailApp():
+class mailApp():  #viene por Default en el telefono -> creo instancias de esta clase a través de un atributo en Telefono
     def __init__(self):
-        self.recibidos = []
         self.noleidos = []
         self.leidos = []
 
     def cargar_mail(self, fecha_envio, remitente, destinatario, contenido, asunto=None, leido=False):
         mail = Email(fecha_envio, remitente, destinatario, contenido, asunto, leido)
-        self.recibidos.append(mail)
         if not mail.leido:
             self.noleidos.append(mail)
         else:

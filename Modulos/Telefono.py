@@ -12,14 +12,16 @@ from Mail import *
 
 class Telefono:
 
-    numeros_registrados = []
-    numeros_conectados = []
+    numeros_registrados = [] #registra todos los numero creados
+    numeros_conectados = [] # registra todos los numero conectado con conexión a red activada
 
     def __init__(self,  id_telefono, nombre, modelo, os, version_os, ram, almacenamiento, numero, espacio_libre = 50,  estado = 0, estado_pantalla = 0, estado_red=0): #PONER CONFIGURACION, mensajes_app
         if len(str(numero)) != 8:
             raise ValueError("El numero ingresado es inválido") #a nacho no le funciono pero ahora si
         if numero in Telefono.numeros_registrados:
             raise ValueError("El numero ingresado ya existe")
+        if espacio_libre > almacenamiento:
+            raise ValueError("El espacio libre no puede ser mayor al almacenamiento")
 
         self.id_telefono = id_telefono
         self.nombre = nombre
@@ -117,6 +119,8 @@ try:
     if __name__=='__main__':
         telefono_nacho = Telefono(12, "Nacho", "Iphone", "X", "IOS", 20, 500, 12345678, 400 )
         telefono_jose = Telefono(2, "Jose", "Iphone", "X", "IOS", 20, 600, 87654321, 400)
+        telefono_agus = Telefono("Agus", "nokia", "cubo", "nok", 8, 500, 100, 11112222, 21)
+
         telefono_nacho.on_off()
         print(telefono_nacho)
         print(Telefono.numeros_registrados)
@@ -148,10 +152,14 @@ try:
 
         print("..........................Pruebo Central............................")
 
+        telefono_fede = Telefono("Fede", "nokia", "cubo", "nok", 8, 500, 128, 11113333, 21)
         print(Telefono.numeros_registrados)
+
         id1 = Central(1)
-        telefono_agus = Telefono("Agus", "nokia", "cubo", "nok", 8, 500, 12, 11112222, 21)
-        print(Telefono.numeros_registrados)
+       # id1.alta_id(telefono_fede)
+
+
+        print(Central.telefonos_registrados)
         #id1.alta_id(telefono_nacho)  #por que desde Central funciona y aca no
 
 
@@ -164,14 +172,15 @@ try:
         print(telefono_nacho.contactos)
 
         print("..........................Pruebo AppStore............................")
-        telefono_nacho.instalar_app("instagram")
+        #telefono_nacho.instalar_app("spotify") # tengo que vincular app store con spotify
 
-        print("..........................Pruebo Telefono............................")
+        print("..........................Pruebo Llamada............................")
         print(telefono_nacho.estado_red) # 0
         telefono_nacho.llamar(921) #pruebo condicion de conexion a la red
         telefono_nacho.conexion_red()
         telefono_nacho.llamar(921) #pruebo condicion de numero valido
         #veo a que telefono puedo llamar
+        telefono_nacho.llamar(87654321)
         print(Central.telefonos_registrados)
 
 

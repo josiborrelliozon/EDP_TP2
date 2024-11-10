@@ -1,5 +1,3 @@
-
-
 class App():
     def __init__(self, nombre, espacio):
         self.nombre = nombre
@@ -11,9 +9,9 @@ class App():
     def __repr__(self):
         return f'{self.nombre}, espacio = {self.espacio} Gb'
 
-class AppStore():
+class AppStore(): #viene por Default en el telefono -> creo instancias de esta clase a través de un atributo en Telefono
 
-    def __init__(self):
+    def __init__(self): #
         self.apps_instaladas = {}
         self.apps_disponibles = {} #no instaladas pero existentes, cuando hago spotifyy poner aca
 
