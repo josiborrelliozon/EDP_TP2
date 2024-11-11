@@ -4,12 +4,52 @@ class Contactos():  #viene por Default en el telefono -> creo instancias de esta
         self.contactos_guardados= {}
 
     def agregar_contacto(self, nombre, numero, correo, direccion ):
+
+        """
+        Agrega un nuevo contacto a la lista de contactos guardados.
+
+        Parámetros:
+        ----------
+        nombre : str
+            Nombre del contacto a agregar.
+        numero : str
+            Número de teléfono del contacto.
+        correo : str
+            Correo electrónico del contacto.
+        direccion : str
+            Dirección del contacto.
+
+        Lanza:
+        ------
+        ValueError
+            Si el número de teléfono ya existe en los contactos guardados.
+        """
+
         if numero not in self.contactos_guardados.keys():
             self.contactos_guardados[numero] = Contacto(nombre, numero, correo, direccion + '\n')
         else:
             raise ValueError('El contacto ya existe')
 
     def actualizar_contacto(self, numero, nombre=None, correo=None, direccion=None):
+        """
+        Actualiza la información de un contacto existente.
+
+        Parámetros:
+        ----------
+        numero : str
+            Número de teléfono del contacto que se desea actualizar.
+        nombre : str, opcional
+            Nuevo nombre del contacto. Si no se proporciona, no se modifica.
+        correo : str, opcional
+            Nuevo correo electrónico del contacto. Si no se proporciona, no se modifica.
+        direccion : str, opcional
+            Nueva dirección del contacto. Si no se proporciona, no se modifica.
+
+        Imprime:
+        --------
+        Un mensaje indicando si el contacto fue actualizado o si no se encontró el número.
+        """
+
         if numero in self.contactos_guardados.keys(): #checkea que el numero del contacto que quiero modificar existe
             contacto = self.contactos_guardados[numero]
             if nombre:

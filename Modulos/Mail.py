@@ -10,6 +10,28 @@ class mailApp():  #viene por Default en el telefono -> creo instancias de esta c
         self.leidos = []
 
     def cargar_mail(self, fecha_envio, remitente, destinatario, contenido, asunto=None, leido=False):
+
+        """
+        Carga un nuevo correo electrónico en las listas correspondientes según su estado de lectura.
+
+        Parámetros:
+        ----------
+        fecha_envio : str
+            Fecha y hora en que se envió el correo.
+        remitente : str
+            Dirección de correo electrónico del remitente.
+        destinatario : str
+            Dirección de correo electrónico del destinatario.
+        contenido : str
+            Contenido del correo electrónico.
+        asunto : str, opcional
+            Asunto del correo electrónico. Si no se proporciona, se asigna un valor por defecto.
+        leido : bool, opcional
+            Indica si el correo ha sido leído. Por defecto es False.
+
+        El correo se agrega a la lista 'noleidos' si no ha sido leído, o a la lista 'leidos' si ya fue leído.
+        """
+
         mail = Email(fecha_envio, remitente, destinatario, contenido, asunto, leido)
         if not mail.leido:
             self.noleidos.append(mail)
@@ -17,7 +39,25 @@ class mailApp():  #viene por Default en el telefono -> creo instancias de esta c
             self.leidos.append(mail)
 
     def buzon_mails(self):
-        # Ordenar los emails no leídos y leídos por fecha de más reciente a más antigua
+        """
+        Devuelve los correos electrónicos ordenados por fecha de más reciente a más antigua,
+        divididos en no leídos y leídos.
+
+        Ordena los correos no leídos y leídos por la fecha de envío en orden descendente
+        y los asigna a las listas correspondientes.
+
+        Parámetros:
+        ----------
+        Ninguno
+
+        Modifica:
+        ---------
+        noleidos_ordenados : list
+            Lista de correos no leídos ordenados por fecha.
+        leidos_ordenados : list
+            Lista de correos leídos ordenados por fecha.
+        """
+
         noleidos_ordenados = sorted(self.noleidos, key=lambda email: email.fecha_envio, reverse=True)
         leidos_ordenados = sorted(self.leidos, key=lambda email: email.fecha_envio, reverse=True)
 
@@ -49,6 +89,22 @@ class Email():
         self.fecha = f"{dia_semana}, {fecha}, {hora} ({tiempo_transcurrido})"
 
     def calcular_tiempo_transcurrido(self):
+        """
+        Calcula el tiempo transcurrido desde la fecha de envío del correo.
+
+        Compara la fecha de envío del correo con la fecha actual y devuelve una cadena
+        indicando cuántos días han pasado desde el envío.
+
+        Parámetros:
+        ----------
+        Ninguno
+
+        Retorna:
+        --------
+        str
+            Una cadena que indica el tiempo transcurrido en días (por ejemplo, "hace 2 días").
+        """
+
         ahora = datetime.now()
         diferencia = ahora - self.fecha_envio
 

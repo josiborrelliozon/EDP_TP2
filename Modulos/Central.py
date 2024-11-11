@@ -2,8 +2,11 @@ from Contactos import *
 from AppStore import *
 from Mail import *
 from datetime import datetime, timedelta
+from Configuracion import *
 #from CalculadoraGrafica import *
 import numpy as np
+from Telefono import *
+
 
 
 #En el siguiente archivo, se encuentran las clases: Telefono, TelefonoApp, Central, MensajesApp y SMS (clase abstacta invocada en MensajesApp) y el MAIN
@@ -14,7 +17,22 @@ class MensajesApp(): #viene por Default en el telefono -> creo instancias de est
         self.sms_recibidos = []
         self.sms_enviados = []
 
-    def enviar_sms(self, numero, mensaje): #envia un mensaje SMS introduciendo un numero de destinatario
+    def enviar_sms(self, numero, mensaje):
+        """
+        Envía un mensaje SMS a un número registrado en la Central.
+
+        Verifica que el número de destino esté registrado en la Central antes de enviar el SMS. Si el número no está registrado, lanza un error.
+        Si el número está registrado, crea un objeto `SMS` y lo agrega a la lista de mensajes enviados.
+
+        Parámetros:
+        ----------
+        numero : str
+            Número de teléfono al cual se enviará el mensaje SMS.
+        mensaje : str
+            Contenido del mensaje SMS a enviar.
+        """
+
+        #envia un mensaje SMS introduciendo un numero de destinatario
         if not any(telefono.numero == numero for telefono in Central.telefonos_registrados.values()): #verifica que el numero este regstrado en la Central
             raise ValueError('Número no registrado')
         else:
@@ -23,18 +41,66 @@ class MensajesApp(): #viene por Default en el telefono -> creo instancias de est
             print('Mensaje enviado:')
             print(f'    {aux}')
 
-    def cargar_mensaje(self, numero, mensaje, fecha): #Genera mensajes (simula que recibo mensajes)
+    def cargar_mensaje(self, numero, mensaje, fecha):
+        """
+        Carga un mensaje SMS recibido, agregándolo a la lista de mensajes recibidos.
+
+        Crea un objeto `SMS` con el número de teléfono, mensaje y fecha proporcionados, y lo agrega a la lista de mensajes recibidos.
+
+        Parámetros:
+        ----------
+        numero : str
+            Número de teléfono del remitente del mensaje SMS.
+        mensaje : str
+            Contenido del mensaje SMS recibido.
+        fecha : datetime
+            Fecha y hora en que se recibió el mensaje SMS.
+        """
+        #Genera mensajes (simula que recibo mensajes)
         aux = SMS(numero, mensaje, fecha)
         self.sms_recibidos.append(aux)
         print(f'Mensaje recibido de {numero}')
 
-    def visualizar_entrada(self): #Devuelve todos los SMS recibidos
+    def visualizar_entrada(self):
+        """
+        Muestra todos los mensajes SMS recibidos, ordenados por fecha de envío, de más reciente a más antigua.
+
+        Esta función ordena la lista de mensajes SMS recibidos según la fecha de envío, de modo que los mensajes más recientes aparecen primero, y luego imprime cada mensaje en la bandeja de entrada.
+
+        Parámetros:
+        ----------
+        Ninguno
+
+        Salida:
+        -------
+        Imprime en la consola los mensajes SMS recibidos en orden descendente por fecha de envío.
+        """
+        #Devuelve todos los SMS recibidos
         recibidos = sorted(self.sms_recibidos, key=lambda x: x.fecha_envio, reverse=True)
         print("Bandeja de entrada SMS:")
         for sms in recibidos:
             print(f'    {sms}')
 
-    def eliminar_mensaje(self, numero, mensaje, fecha):  # Elimina mensajes recibidos
+    def eliminar_mensaje(self, numero, mensaje, fecha):
+        """
+        Elimina un mensaje SMS recibido de la bandeja de entrada.
+
+        Esta función busca un mensaje en la lista de mensajes SMS recibidos que coincida con el número, el contenido del mensaje y la fecha de envío especificados. Si se encuentra el mensaje, se elimina de la lista. Si no se encuentra, se lanza una excepción.
+
+        Parámetros:
+        ----------
+        numero : str
+            El número del remitente del mensaje SMS a eliminar.
+        mensaje : str
+            El contenido del mensaje SMS a eliminar.
+        fecha : datetime
+            La fecha de envío del mensaje SMS a eliminar.
+
+        Salida:
+        -------
+        Imprime un mensaje indicando que el mensaje ha sido eliminado o lanza una excepción si no se encuentra el mensaje.
+        """
+        # Elimina mensajes recibidos
         mensaje_a_eliminar = None
         for sms in self.sms_recibidos:
             if sms.numero == numero and sms.mensaje == mensaje and sms.fecha_envio == fecha:
@@ -62,7 +128,25 @@ class TelefonoApp():  #viene por Default en el telefono -> creo instancias de es
     def __init__(self):
         self.llamadas = []
 
-    def llamar(self, numero_propio, numero_entrante): #crea una llamada entre los dos numeros introducidos
+    def llamar(self, numero_propio, numero_entrante):
+        """
+        Realiza una llamada entre dos números. Primero verifica que ninguno de los dos números
+        esté ocupado en una llamada, que el número entrante esté registrado y tenga conexión a
+        la red, y luego agrega la llamada a la lista de llamadas en curso.
+
+        Parámetros:
+        -----------
+        numero_propio : str
+            El número desde el cual se realiza la llamada.
+        numero_entrante : str
+            El número al cual se realiza la llamada.
+
+        Excepciones:
+        ------------
+        ValueError: Si el número está ocupado, no está registrado, o si la red no está disponible.
+        """
+
+        #crea una llamada entre los dos numeros introducidos
         for llamadas in Central.llamadas_en_curso:
             if numero_entrante in llamadas: #si el numero está en una llamada en curso
                 raise ValueError("Numero ocupado")
@@ -81,12 +165,44 @@ class TelefonoApp():  #viene por Default en el telefono -> creo instancias de es
 
 
     def atender(self, numero_propio, numero_saliente):
+        """
+        Atiende una llamada entrante. Primero verifica que el número propio no esté en
+        una llamada en curso. Si es posible, agrega la llamada a la lista de llamadas en curso.
+
+        Parámetros:
+        -----------
+        numero_propio : str
+            El número que atiende la llamada.
+        numero_saliente : str
+            El número que está realizando la llamada entrante.
+
+        Excepciones:
+        ------------
+        ValueError: Si el número propio ya está en una llamada en curso.
+        """
+
         for llamadas in Central.llamadas_en_curso:
             if numero_propio in llamadas:
                 raise ValueError("Para realizar nueva llamada debes cortar")
         Central.llamadas_en_curso.append((numero_propio, numero_saliente))
 
     def cortar(self, numero_propio, numero):
+        """
+        Corta una llamada en curso entre el número propio y el número dado. Verifica si existe una llamada activa
+        entre los dos números, la elimina de la lista de llamadas en curso y registra la fecha de finalización.
+
+        Parámetros:
+        -----------
+        numero_propio : str
+            El número que está cortando la llamada.
+        numero : str
+            El número con el que se está realizando la llamada.
+
+        Excepciones:
+        ------------
+        ValueError: Si no hay una llamada en curso entre los dos números.
+        """
+
         # Crear una lista de los números, en cualquier orden
         lista_a_eliminar = {numero_propio, numero}  # Usamos un conjunto para ignorar el orden
 
@@ -123,14 +239,23 @@ class Central:
     def __init__(self, nombre): #Creo una Central: ej Claro, Personal, etc
         self.nombre = nombre
 
+    @classmethod
+    def crear_telefono(cls, nombre, modelo, os, version_os, ram, almacenamiento, numero, espacio_libre=50, estado=0, estado_pantalla=0, estado_red=0, estado_internet=0):
+        if numero in Central.numeros_existentes: #se verifica que el número no se repita
+            raise ValueError("El numero ingresado ya existe")
+        telefono = Telefono(nombre, modelo, os, version_os, ram, almacenamiento, numero, espacio_libre, estado, estado_pantalla, estado_red, estado_internet)
+        cls.numeros_existentes.append(numero)
+        cls.alta_id(telefono)
 
-    def alta_id(self, telefono): # Asigno un id a un telefono
-        if telefono.numero not in Central.numeros_existentes: #verifico que la instancia del telefon fue creada
+    @classmethod
+    def alta_id(cls, telefono):  # Cambiamos 'self' por 'cls' para usarlo como método de clase
+        if telefono.numero not in cls.numeros_existentes:
             raise ValueError("Este numero no existe")
         else:
-            Central.telefonos_registrados[Central.id_num] = telefono
-            telefono.id_central = Central.id_num
-            Central.id_num += 1
+            cls.telefonos_registrados[cls.id_num] = telefono
+            telefono.id_central = cls.id_num
+            cls.id_num += 1
+
     def baja_id(self, telefono): # Se da de baja un id y se desregistra el telefono
        if telefono.id_central not in Central.telefonos_registrados.keys():
            raise ValueError("Este numero no se encuentra registrado")
@@ -162,218 +287,13 @@ class Central:
 
 
 
-
-class Telefono:
-    id_telefono= 1000
-    def __init__(self, nombre, modelo, os, version_os, ram, almacenamiento, numero, espacio_libre = 50,  estado = 0, estado_pantalla = 0, estado_red=0, estado_internet =0): #PONER CONFIGURACION, mensajes_app
-        if len(str(numero)) != 8:
-            raise ValueError("El numero ingresado es inválido") 
-        if numero in Central.numeros_existentes: #se verifica que el número no se repita
-            raise ValueError("El numero ingresado ya existe")
-        if espacio_libre > almacenamiento: #se verifica que el espacio libre no supere al almacenamiento
-            raise ValueError("El espacio libre no puede ser mayor al almacenamiento")
-
-
-        self.id_telefono = Telefono.id_telefono
-        #self.id_central = None
-        self.nombre = nombre
-        self.modelo = modelo
-        self.os = os #sistema operativo
-        self.version_os = version_os #sistema operativo
-        self.ram = ram
-        self.almacenamiento = almacenamiento
-        self.espacio_libre = espacio_libre
-        self.numero = numero
-        self.estado = estado  #on/off
-        self.estado_pantalla = estado_pantalla #bloqueado/desbloqueado
-        self.estado_red = estado_red #conexion a la red para realizar y recibir llamadas
-        self. estado_internet = estado_internet #conexion a internet
-        self.contactos = Contactos() #viene por default en el telefono
-        self.telefono_app = TelefonoApp() #viene por default en el telefono
-        self.appstore = AppStore() #viene por default en el telefono
-        self.mail_app = mailApp() #viene por default en el telefono
-        self.mensajes_app = MensajesApp() #viene por default en el telefono
-        #self.calculadora_grafica = CalculadoraGrafica()
-
-        Telefono.id_telefono += 1
-        Central.numeros_existentes.append(self.numero)
-
-    def __str__(self):
-        return f'(nombre: {self.nombre}, id_telefono: {self.id_telefono} , numero: {self.numero}, conectado a red: {self.estado_red}, prendido: {self.estado}, conexión internet: {self.estado_internet})'
-
-    def __repr__(self):  #se usa para una representación detallada del objeto, ideal para depuración y cuando un objeto se muestra en una lista o diccionario
-        return f'(nombre: {self.nombre}, id_telefono: {self.id_telefono} , numero: {self.numero}, conectado a red: {self.estado_red}, prendido: {self.estado}, conexión internet: {self.estado_internet})'
-
-    # .........................................Metodos del telefono ..................................................................
-    def on_off(self):
-        if self.estado == 0: #celular apagado, lo prende
-            self.estado = 1
-            print(f'Prendido: {self}')
-        else:                 #celular prendido, lo apaga
-            self.estado = 0
-            print(f'Apagado {self}')
-            if self.estado_red == 1: #cuando apago un celular, se desconecta de la red
-                self.conexion_red()
-            if self.estado_internet == 1: #cuando apago el celular, se desconecta el internet
-                self.conexion_internet()
-
-
-    def desbloquear(self):
-        if self.estado ==1: #si el celular está prendido,
-            if self.estado_pantalla == 0: #si está bloqueado
-                self.estado_pantalla = 1 #lo desbloquea
-                print(f'Pantalla desbloqueada: {self}')
-            else: #si está desbloqueado,
-                self.estado_pantalla = 0 #lo bloquea
-                print(f'Pantalla bloqueada: {self}')
-        else: #si está apagado,
-            raise Exception("El celular se encuentra apagado") #cambiar esto (ta bien, no tiene mucho sentido)
-
-    def conexion_red(self):
-        if self.estado == 1: #si el celular está prendido
-            if self.estado_red == 0: #y el celular está en "modo avíon"
-                self.estado_red = 1 #conecta la red
-                print(f" {self.numero} activó conexión a red")
-                Central.numeros_conectados_red.append(self.numero)
-            else: #si el celular está conectado a una red
-                self.estado_red = 0 #lo pone en "modo avión"
-                print(f" {self.numero} desactivó conexión a red")
-                Central.numeros_conectados_red.remove(self.numero)
-        else: #si el celular está apagado
-            print(f" {self.numero}: Para conectar a la red debe encender el telefono ")
-
-    def conexion_internet(self):
-        if self.estado == 1: #si el celular está prendido
-            if self.estado_internet == 0: #y el celular está sin internet
-                self.estado_internet = 1 #conecta a internet
-                print(f" {self.numero} se conecto a internet")
-                Central.numeros_conectados_internet.append(self.numero)
-            else: #si el celular está conectado a una red
-                self.estado_internet = 0 #lo desconecta de internet
-                print(f" {self.numero} desactivó conexión a internet")
-                Central.numeros_conectados_internet.remove(self.numero)
-        else: #si el celular está apagado
-            print(f" {self.numero}: Para conectar a internet debe encender el telefono ")
-
-
-    #  ....................................Wrappers con metodos de Llamadas..................................................................
-
-    def llamar(self, numero): #llamo a un numero usando App de llamadas
-        if self.numero not in Central.numeros_conectados_red: #verifico conexion a red desde Central
-            return ValueError("El celular no esta conectado a la red")      #hacer un ValueError!!!!!!!!!!!!!!!
-
-        self.telefono_app.llamar(self.numero, numero)
-
-    def atender(self, numero):
-        if self.numero not in Central.numeros_conectados_red:
-            raise ValueError("Tu telefono no se encuentra disponible")
-        else:
-            self.telefono_app.atender(self.numero, numero)
-
-    def cortar(self, numero):
-        self.telefono_app.cortar(self.numero, numero)
-
-
-    #  ....................................Wrappers con metodos de AppStore...............................................................
-
-    def instalar_app(self, nombre):
-        if self.estado == 0: #telefono debe estar prendido
-            raise ValueError("El celular se encuentra apagado")
-        elif self.estado_pantalla == 0: #pantalla debe estar desbloqueada
-            raise ValueError("El celular se encuentra bloqueado")
-        elif self.estado_internet == 0: #telefono debe estar conectado a internet
-            raise ValueError("El celular no esta conectado a internet")
-        else:
-            self.appstore.instalar_app(nombre, self.espacio_libre)
-            print(self.appstore.apps_instaladas)
-        #aux = self.appstore.apps_instaladas
-        #if nombre in aux:
-            #self.espacio_libre -= aux[nombre]
-            #print(f'Espacio libre restante {self.espacio_libre}')
-
-    def borrar_app(self, nombre): #borra el app si esta instalada y si el celular esta prendido y desbloqueado
-        if self.estado == 0: #telefono debe estar prendido
-            raise ValueError("El celular se encuentra apagado")
-        elif self.estado_pantalla == 0: #pantalla debe estar desbloqueada
-            raise ValueError("El celular se encuentra bloqueado")
-        else:
-            self.appstore.borrar_app(nombre, self.espacio_libre)
-
-    #  ....................................Wrappers con metodos de Contactos................................................................
-
-    def nuevo_contacto(self, nombre, numero, correo = None, direccion = None): #agrega un nuevo contacto, verificando que el celular este desbloqueado y prendido
-        if self.estado == 0: #telefono debe estar prendido
-            raise ValueError("El celular se encuentra apagado")
-        elif self.estado_pantalla == 0: #pantalla debe estar desbloqueada
-            raise ValueError("El celular se encuentra bloqueado")
-        else:
-            self.contactos.agregar_contacto(nombre, numero, correo, direccion)
-
-    def actualizar_contacto(self, numero, nombre, correo = None, direccion = None):
-        if self.estado == 0: #telefono debe estar prendido
-            raise ValueError("El celular se encuentra apagado")
-        elif self.estado_pantalla == 0: #pantalla debe estar desbloqueada
-            raise ValueError("El celular se encuentra bloqueado")
-
-        else:
-            self.contactos.actualizar_contacto(numero, correo, direccion)
-
-    #  ....................................Wrappers con metodos de App de Mensajes SMS................................................................
-
-    def enviar_sms(self, numero, mensaje): #envia un SMS verificando que el dispositivo se encuentre conectado a la red
-        if self.estado == 0: #telefono debe estar prendido
-            raise ValueError("El celular se encuentra apagado")
-        elif self.estado_pantalla == 0: #pantalla debe estar desbloqueada
-            raise ValueError("El celular se encuentra bloqueado")
-        elif self.estado_red == 0: #pantalla debe estar desbloqueada
-            raise ValueError("El celular no esta conectado a la red")
-        else:
-            self.mensajes_app.enviar_sms(numero, mensaje)
-
-    def visualizar_entrada(self):  # Devuelve todos los SMS recibidos verificando que el dispositivo se encuentre conectado a la red
-        if self.estado == 0: #telefono debe estar prendido
-            raise ValueError("El celular se encuentra apagado")
-        elif self.estado_pantalla == 0: #pantalla debe estar desbloqueada
-            raise ValueError("El celular se encuentra bloqueado")
-        elif self.estado_red == 0: #pantalla debe estar conectada red
-            raise ValueError("El celular no esta conectado a la red")
-        else:
-            self.mensajes_app.visualizar_entrada()
-
-    def cargar_mensaje(self, numero, mensaje, fecha): #Genera mensajes (simula que recibo mensajes)
-        if self.estado_red == 0: #pantalla debe estar conectada red
-            raise ValueError("El celular no esta conectado a la red")
-        else:
-            self.mensajes_app.cargar_mensaje(numero, mensaje, fecha)
-
-    def eliminar_mensaje(self, numero, mensaje, fecha):  # Elimina mensajes recibidos
-        if self.estado == 0: #telefono debe estar prendido
-            raise ValueError("El celular se encuentra apagado")
-        elif self.estado_pantalla == 0: #pantalla debe estar desbloqueada
-            raise ValueError("El celular se encuentra bloqueado")
-        elif self.estado_red == 0: #pantalla debe estar conectada red
-            raise ValueError("El celular no esta conectado a la red")
-        else:
-            self.mensajes_app.eliminar_mensaje(numero, mensaje, fecha)
-
-#  ....................................Wrappers con metodos de Mail.................................................
-
-    def cargar_mail(self, fecha_envio, remitente, destinatario, contenido, asunto=None, leido=False):
-            self.mail_app.cargar_mail(fecha_envio, remitente, destinatario, contenido, asunto, leido)
-
-    def buzon_mails(self):
-        if self.estado == 0: #telefono debe estar prendido
-            raise ValueError("El celular se encuentra apagado")
-        elif self.estado_pantalla == 0: #pantalla debe estar desbloqueada
-            raise ValueError("El celular se encuentra bloqueado")
-        elif self.estado_internet == 0: #pantalla debe estar conectada a internet
-            raise ValueError("El celular no esta conectado a internet")
-        else:
-            self.mail_app.buzon_mails()
 try:
     if __name__=='__main__':
         #creo instancias de telefono:
+        Central.crear_telefono("telefono_juanpi", "Nacho","Iphone", "X", "IOS", 20, 12345678, 12 )
         telefono_nacho = Telefono( "Nacho", "Iphone", "X", "IOS", 20, 500, 12345678, 400 )
+        telefono_nacho.configuracion.configuracion_cambiar_nombre_telefono('Nachito')
+        print(telefono_nacho)
         telefono_jose = Telefono( "Jose", "Iphone", "X", "IOS", 20, 600, 87654321, 400)
         telefono_agus = Telefono( "Agus", "Nokia", "nok", 8, 500, 100, 11112222, 21)
         telefono_fede = Telefono( "Telefono de Fede", "cubo", "nok", 8, 500, 123, 11113333, 21)

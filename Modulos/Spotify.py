@@ -54,7 +54,21 @@ class SpotifyApp(App):
         self.cola_reproduccion = ColaDeReproduccion() #Crea una instancia de Cola_De_Reproduccion
 
 #Primero muestro los metodos de cola
+
     def agregar_a_cola_reproduccion(self, cancion):
+        """
+        Agrega una canción a la cola de reproducción si no está llena.
+
+        Verifica si la cola de reproducción tiene espacio disponible y agrega la canción
+        si la cola no está llena. Si la cola está llena, muestra un mensaje indicando
+        que no se puede agregar más canciones.
+
+        Parámetros:
+        ----------
+        cancion : Canción
+            Objeto que representa la canción que se desea agregar a la cola de reproducción.
+        """
+
         # Agrega una canción a la cola de reproducción si no está llena.
         if not self.cola_reproduccion.cola.full():
             self.cola_reproduccion.cola.put(cancion)
@@ -63,6 +77,18 @@ class SpotifyApp(App):
             print("La cola de reproducción está llena. No se puede agregar más canciones.")
 
     def reproducir_cola(self):
+        """
+        Reproduce todas las canciones de la cola de reproducción.
+
+        Extrae y reproduce cada canción en la cola de reproducción, esperando la duración
+        de cada una antes de pasar a la siguiente. Al finalizar, muestra un mensaje indicando
+        que la cola de reproducción está vacía.
+
+        Parámetros:
+        ----------
+        Ninguno
+        """
+
         # Reproduce todas las canciones de la cola de reproducción.
         while not self.cola_reproduccion.cola.empty():
             cancion = self.cola_reproduccion.cola.get()
@@ -72,6 +98,17 @@ class SpotifyApp(App):
         print("La cola de reproducción está vacía.")
 
     def ver_cola(self):
+        """
+        Muestra las canciones en la cola de reproducción.
+
+        Verifica si la cola de reproducción está vacía y, si no lo está, muestra una lista
+        numerada de las canciones en la cola. Si la cola está vacía, muestra un mensaje indicándolo.
+
+        Parámetros:
+        ----------
+        Ninguno
+        """
+
         # Muestra las canciones en la cola de reproducción.
         if not self.cola_reproduccion.cola.empty():
             print("Canciones en la cola de reproducción:")
@@ -83,6 +120,19 @@ class SpotifyApp(App):
 #Acá muestro otros métodos con listas. Después se usan para la interfaz interactiva
 
     def agregar_cancion_guardada(self, cancion):
+        """
+        Agrega una canción a la lista de canciones guardadas si está en la lista de canciones creadas.
+
+        Verifica si la canción existe en la lista de canciones creadas y si no está ya guardada.
+        Si se cumple ambas condiciones, la canción se agrega a la lista de canciones guardadas.
+        Si la canción ya está guardada o no está creada, se muestra un mensaje correspondiente.
+
+        Parámetros:
+        ----------
+        cancion : Canción
+            Objeto que representa la canción que se desea guardar.
+        """
+
         # Verificar si la canción está en la lista de canciones creadas
         if cancion in SpotifyApp.canciones_creadas:
             if cancion not in self.canciones_guardadas:
@@ -95,6 +145,18 @@ class SpotifyApp(App):
 
 
     def eliminar_cancion_guardada(self, cancion):
+        """
+        Elimina una canción de la lista de canciones guardadas.
+
+        Verifica si la canción está en la lista de canciones guardadas y, si es así,
+        la elimina. Si la canción no está en la lista, muestra un mensaje indicando que no se encuentra.
+
+        Parámetros:
+        ----------
+        cancion : Canción
+            Objeto que representa la canción que se desea eliminar de las canciones guardadas.
+        """
+
         # Eliminar una canción de la lista de canciones guardadas
         if cancion in self.canciones_guardadas:
             self.canciones_guardadas.remove(cancion)
@@ -104,12 +166,35 @@ class SpotifyApp(App):
 
 
     def crear_playlist(self, nombre_playlist):
+        """
+        Crea una nueva playlist y la agrega a la lista de playlists.
+
+        Crea un objeto `Playlist` con el nombre proporcionado y lo agrega a la lista de playlists.
+        Muestra un mensaje confirmando la creación de la playlist.
+
+        Parámetros:
+        ----------
+        nombre_playlist : str
+            Nombre de la nueva playlist a crear.
+        """
         nueva_playlist = Playlist(nombre_playlist)
         self.playlists.append(nueva_playlist)
         print(f"Playlist '{nombre_playlist}' creada.")
 
 
     def eliminar_playlist(self, nombre_playlist):
+        """
+        Elimina una playlist de la lista de playlists.
+
+        Busca una playlist con el nombre proporcionado (ignorando mayúsculas y minúsculas)
+        y la elimina de la lista de playlists. Si no se encuentra la playlist, muestra un mensaje indicando que no fue encontrada.
+
+        Parámetros:
+        ----------
+        nombre_playlist : str
+            Nombre de la playlist que se desea eliminar.
+        """
+
         # Eliminar una playlist de la lista de playlists
         for playlist in self.playlists:
             if playlist.nombre.lower() == nombre_playlist.lower():
@@ -120,6 +205,21 @@ class SpotifyApp(App):
 
 
     def agregar_cancion_a_playlist(self, nombre_playlist, cancion):
+        """
+        Agrega una canción a una playlist existente.
+
+        Verifica si la canción está en la lista de canciones creadas y si la playlist existe.
+        Si ambos son ciertos, agrega la canción a la playlist. Si la canción ya está en la playlist
+        o la playlist no se encuentra, muestra un mensaje correspondiente.
+
+        Parámetros:
+        ----------
+        nombre_playlist : str
+            Nombre de la playlist a la que se desea agregar la canción.
+        cancion : Canción
+            Objeto que representa la canción que se desea agregar a la playlist.
+        """
+
         if cancion in SpotifyApp.canciones_creadas:  # Verificar si la canción está en la lista de canciones creadas
             for playlist in self.playlists:
                 if playlist.nombre.lower() == nombre_playlist.lower():
@@ -135,6 +235,21 @@ class SpotifyApp(App):
 
 
     def eliminar_cancion_de_playlist(self, nombre_playlist, cancion):
+        """
+        Elimina una canción de una playlist específica.
+
+        Busca la playlist con el nombre proporcionado y, si la canción está en la playlist,
+        la elimina. Si la canción no está en la playlist o la playlist no se encuentra,
+        muestra un mensaje correspondiente.
+
+        Parámetros:
+        ----------
+        nombre_playlist : str
+            Nombre de la playlist de la que se desea eliminar la canción.
+        cancion : Canción
+            Objeto que representa la canción que se desea eliminar de la playlist.
+        """
+
         # Eliminar una canción de una playlist específica
         for playlist in self.playlists:
             if playlist.nombre.lower() == nombre_playlist.lower():
@@ -148,6 +263,17 @@ class SpotifyApp(App):
 
 
     def ver_playlists(self):
+        """
+        Muestra todas las playlists almacenadas.
+
+        Verifica si hay playlists y, si existen, las muestra en una lista numerada.
+        Si no hay playlists, muestra un mensaje indicando que no hay playlists disponibles.
+
+        Parámetros:
+        ----------
+        Ninguno
+        """
+
         if not self.playlists:
             print("No hay playlists.")
         else:
@@ -157,6 +283,17 @@ class SpotifyApp(App):
 
 
     def ver_canciones_guardadas(self):
+        """
+        Muestra todas las canciones guardadas.
+
+        Verifica si hay canciones guardadas y, si existen, las muestra en una lista numerada.
+        Si no hay canciones guardadas, muestra un mensaje indicando que no hay canciones guardadas.
+
+        Parámetros:
+        ----------
+        Ninguno
+        """
+
         if not self.canciones_guardadas:
             print("No hay canciones guardadas.")
         else:
@@ -165,6 +302,17 @@ class SpotifyApp(App):
                 print(f"{idx}. {cancion}")
 
     def ver_canciones_creadas(self):
+        """
+        Muestra todas las canciones creadas.
+
+        Verifica si existen canciones creadas en `SpotifyApp.canciones_creadas` y, si es así,
+        las muestra en una lista numerada. Si no hay canciones creadas, muestra un mensaje indicando que no hay canciones.
+
+        Parámetros:
+        ----------
+        Ninguno
+        """
+
         if not SpotifyApp.canciones_creadas:
             print("No hay canciones creadas.")
         else:
@@ -174,6 +322,18 @@ class SpotifyApp(App):
 
 
     def ver_canciones_de_playlist(self, nombre_playlist):
+        """
+        Muestra las canciones de una playlist específica.
+
+        Busca la playlist con el nombre proporcionado y, si existe, muestra las canciones que contiene.
+        Si la playlist está vacía, muestra un mensaje indicando que no tiene canciones. Si no se encuentra la playlist, muestra un mensaje correspondiente.
+
+        Parámetros:
+        ----------
+        nombre_playlist : str
+            Nombre de la playlist de la cual se desea ver las canciones.
+        """
+
         for playlist in self.playlists:
             if playlist.nombre.lower() == nombre_playlist.lower():
                 if not playlist.canciones:
@@ -187,6 +347,21 @@ class SpotifyApp(App):
 
 
     def reproducir_playlist(self, nombre_playlist, aleatorio=False):
+        """
+        Reproduce las canciones de una playlist.
+
+        Busca la playlist con el nombre proporcionado y, si la playlist no está vacía,
+        reproduce las canciones. Si el parámetro `aleatorio` es `True`, las canciones se reproducen
+        en orden aleatorio. Si la playlist está vacía o no se encuentra, muestra un mensaje correspondiente.
+
+        Parámetros:
+        ----------
+        nombre_playlist : str
+            Nombre de la playlist que se desea reproducir.
+        aleatorio : bool, opcional
+            Si se establece como `True`, las canciones se reproducen en orden aleatorio (por defecto es `False`).
+        """
+
         for playlist in self.playlists:
             if playlist.nombre.lower() == nombre_playlist.lower():
                 if not playlist.canciones:
@@ -206,6 +381,18 @@ class SpotifyApp(App):
 
 
     def reproducir_cancion_guardada(self, nombre_cancion):
+        """
+        Reproduce una canción de la lista de canciones guardadas.
+
+        Busca la canción con el nombre proporcionado en la lista de canciones guardadas y, si la encuentra,
+        la reproduce. Si no se encuentra la canción, muestra un mensaje correspondiente.
+
+        Parámetros:
+        ----------
+        nombre_cancion : str
+            Nombre de la canción que se desea reproducir.
+        """
+
         # Reproducir una canción de las canciones guardadas
         for cancion in self.canciones_guardadas:
             if cancion.nombre.lower() == nombre_cancion.lower():
@@ -216,6 +403,17 @@ class SpotifyApp(App):
 
 
     def reproducir_cancion(self, cancion):
+        """
+        Reproduce una canción.
+
+        Muestra un mensaje indicando que la canción proporcionada está siendo reproducida.
+
+        Parámetros:
+        ----------
+        cancion : Canción
+            Objeto que representa la canción que se desea reproducir.
+        """
+
         print(f"Reproduciendo: {cancion}")
 
 

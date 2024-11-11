@@ -11,6 +11,7 @@ class AppStore(): #viene por Default en el telefono -> creo instancias de esta c
 
 
     def instalar_app(self, nombre, espacio):
+
         if nombre not in self.apps_disponibles.keys():
             raise ValueError("Esta app no existe")    #HACER EXCEPT
         aux = self.apps_disponibles[nombre]
@@ -18,18 +19,21 @@ class AppStore(): #viene por Default en el telefono -> creo instancias de esta c
             self.apps_disponibles.pop(nombre)
             self.apps_instaladas[nombre] = aux
             print(f'{nombre} instalada con exito')
+            return aux.espacio
 
         else:
             raise ValueError("No hay espacio disponible")
 
 
     def borrar_app(self, nombre):
+
         if nombre not in self.apps_instaladas.keys():
             raise ValueError("Esta app no se encuentra instalada")
         else:
             valor_eliminado = self.apps_instaladas.pop(nombre)
-            self.apps_instaladas[nombre] = valor_eliminado
+            self.apps_disponibles[nombre] = valor_eliminado
             print(f'{nombre} borrada con exito')
+            return valor_eliminado.espacio
 
     def hay_espacio(self, espacio_disponible, tamano_app):
         return espacio_disponible >= tamano_app
