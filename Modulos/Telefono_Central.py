@@ -9,37 +9,6 @@ import numpy as np
 #En el siguiente archivo, se encuentran las clases: Telefono, TelefonoApp, Central, MensajesApp y SMS (clase abstacta invocada en MensajesApp)
 
 
-class TelefonoApp():  #viene por Default en el telefono -> creo instancias de esta clase a través de un atributo en Telefono
-    def __init__(self):
-        self.llamadas = []
-
-    def llamar(self, numero_propio, numero_entrante): #crea una llamada entre los dos numeros introducidos
-        for tupla_llamadas in Central.llamadas_en_curso:
-            if numero_entrante in tupla_llamadas: #si el numero está en una llamada en curso
-                raise ValueError("Numero ocupado")
-            elif numero_propio in tupla_llamadas:
-                raise ValueError("Para realizar nueva llamada debes cortar")
-
-        if Central.verificar_numero(numero_entrante): #verifica que el numero se encuentre registrado
-            if Central.verificar_red(numero_entrante):  #verifica conexión a red
-                print("llamando ...")
-                Central.llamadas_en_curso.append((numero_propio, numero_entrante))
-            else:
-                raise ValueError("Número fuera de servicio")
-
-        else:
-            raise ValueError("Numero no registrado")
-
-
-    def atender(self, numero_propio, numero_saliente):
-        Central.llamadas_en_curso.append((numero_propio, numero_saliente))
-
-    def cortar(self, numero_propio, numero): #AL CORTAR, AGREGAR REGISTRO DE LLAMADAS
-        lista_a_eliminar = [numero_propio, numero] # lista a eliminar
-        if lista_a_eliminar in Central.llamadas_en_curso: # Eliminar la tupla
-            Central.llamadas_en_curso.remove(lista_a_eliminar)
-
-        self.llamadas.append((numero,f'fecha_realizacion: {datetime.now()}'))
 
 class MensajesApp(): #viene por Default en el telefono -> creo instancias de esta clase a través de un atributo en Telefono
     def __init__(self):
@@ -90,7 +59,54 @@ class SMS: #Clase abstacta
         fecha_formateada = self.fecha_envio.strftime("%b%d %H:%M")
         return f'{self.numero} ({fecha_formateada}): {self.mensaje} '
 
+class TelefonoApp():  #viene por Default en el telefono -> creo instancias de esta clase a través de un atributo en Telefono
+    def __init__(self):
+        self.llamadas = []
 
+    def llamar(self, numero_propio, numero_entrante): #crea una llamada entre los dos numeros introducidos
+        for llamadas in Central.llamadas_en_curso:
+            if numero_entrante in llamadas: #si el numero está en una llamada en curso
+                raise ValueError("Numero ocupado")
+            elif numero_propio in llamadas:
+                raise ValueError("Para realizar nueva llamada debes cortar")
+
+        if Central.verificar_numero(numero_entrante): #verifica que el numero se encuentre registrado
+            if Central.verificar_red(numero_entrante):  #verifica conexión a red
+                print("llamando ...")
+                Central.llamadas_en_curso.append((numero_propio, numero_entrante))
+            else:
+                raise ValueError("Número fuera de servicio")
+
+        else:
+            raise ValueError("Numero no registrado")
+
+
+    def atender(self, numero_propio, numero_saliente):
+        for llamadas in Central.llamadas_en_curso:
+            if numero_propio in llamadas:
+                raise ValueError("Para realizar nueva llamada debes cortar")
+        Central.llamadas_en_curso.append((numero_propio, numero_saliente))
+
+    def cortar(self, numero_propio, numero):
+        # Crear una lista de los números, en cualquier orden
+        lista_a_eliminar = {numero_propio, numero}  # Usamos un conjunto para ignorar el orden
+
+        # Verificar si una llamada en curso contiene estos números
+        llamada_existente = any(set(llamada) == lista_a_eliminar for llamada in Central.llamadas_en_curso)
+
+        if llamada_existente:
+            # Remover la llamada de Central.llamadas_en_curso
+            Central.llamadas_en_curso = [llamada for llamada in Central.llamadas_en_curso if
+                                         set(llamada) != lista_a_eliminar]
+
+            fecha_formateada = datetime.now().strftime('%d-%m-%Y %H:%M') #Doy formato prolijo para la impresion
+
+            # Registrar la llamada finalizada con la fecha de finalización
+            self.llamadas.append((numero, fecha_formateada)) #En el App propia de llamadas
+            Central.historico_llamadas.append((numero_propio, numero, f'fecha_realizacion: {fecha_formateada}')) #En el historico de llamadas de la Central
+            print("Llamada finalizada.")
+        else:
+            raise ValueError("No hay llamada en curso.")
 
 
 
@@ -99,6 +115,7 @@ class Central:
     # el análisis de datos
     telefonos_registrados = {}  #uso diccionario para que no se repitan los contactos, usando el id como key
     llamadas_en_curso = []
+    historico_llamadas = []
     numeros_existentes = []  # registra todos los telefonos instanciados en Telefono
     numeros_conectados_red = []  # registra todos los telefonos disponibles
     numeros_conectados_internet = [] #registra numeros conectados a internet
@@ -247,12 +264,15 @@ class Telefono:
 
         self.telefono_app.llamar(self.numero, numero)
 
-    def atender(self):
+    def atender(self, numero):
         if self.numero not in Central.numeros_conectados_red:
             raise ValueError("Tu telefono no se encuentra disponible")
         else:
-            self.telefono_app.atender()
-    #FALTA CORTAR
+            self.telefono_app.atender(self.numero, numero)
+
+    def cortar(self, numero):
+        self.telefono_app.cortar(self.numero, numero)
+
 
     #  ....................................Wrappers con metodos de AppStore...............................................................
 
@@ -438,17 +458,26 @@ try:
         print("..........................Pruebo Llamada............................")
         print(Central.telefonos_registrados)
         print(Central.verificar_numero(11110000))
-        #telefono_fede.llamar(1213) #pruebo condicion de conexion a red
-        #telefono_nacho.llamar(12) #pruebo condicion de no existencia
-        #telefono_nacho.llamar(11110000) #pruebo condicion de llamar un numero fuera de servicio
+        #telefono_fede.llamar(1213) #pruebo condicion: llamar sin estar conectado a red
+        #telefono_nacho.llamar(12) #pruebo condicion: llamar a numero no existente
+        #telefono_nacho.llamar(11110000) #pruebo condicion: llamar un numero fuera de servicio
 
         telefono_nacho.llamar(87654321)
 
         #telefono_nacho.llamar(921) #pruebo condicion: no puedo llamar a otro numero al estar en llamada
-        #telefono_nacho.llamar(87654321) #pruebo condicion: llamo a un numero ocupado
+        #telefono_pedro.llamar(87654321) #pruebo condicion: llamo a un numero ocupado
+        # telefono_nacho.atender(11110000) #pruebo condicion: no puedo atender a otro numero al estar en llamada
+
+        telefono_agus.on_off()
+        telefono_agus.desbloquear()
+        telefono_agus.conexion_red()
+        telefono_pedro.atender(11112222) #atiendo a un numero desocupado y conectado a red
 
         print(Central.llamadas_en_curso)
 
+        telefono_nacho.cortar(87654321)
+        print(Central.llamadas_en_curso)
+        print(Central.historico_llamadas)
 
 
 
