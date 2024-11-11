@@ -481,8 +481,6 @@ try:
 
 
 
-
-
         print("..........................Pruebo Calculadora............................")
         #telefono_nacho.calculadora_grafica.calcular_polinomios('x**2 - 2*x + 1', 3000)
         #telefono_fede.calculadora_grafica.factorial(5)
