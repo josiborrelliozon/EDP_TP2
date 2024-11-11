@@ -9,7 +9,6 @@ import numpy as np
 #En el siguiente archivo, se encuentran las clases: Telefono, TelefonoApp, Central, MensajesApp y SMS (clase abstacta invocada en MensajesApp)
 
 
-
 class MensajesApp(): #viene por Default en el telefono -> creo instancias de esta clase a través de un atributo en Telefono
     def __init__(self):
         self.sms_recibidos = []
@@ -165,8 +164,8 @@ class Central:
 
 
 class Telefono:
-
-    def __init__(self,  id_telefono, nombre, modelo, os, version_os, ram, almacenamiento, numero, espacio_libre = 50,  estado = 0, estado_pantalla = 0, estado_red=0, estado_internet =0): #PONER CONFIGURACION, mensajes_app
+    id_telefono= 1000
+    def __init__(self, nombre, modelo, os, version_os, ram, almacenamiento, numero, espacio_libre = 50,  estado = 0, estado_pantalla = 0, estado_red=0, estado_internet =0): #PONER CONFIGURACION, mensajes_app
         if len(str(numero)) != 8:
             raise ValueError("El numero ingresado es inválido") 
         if numero in Central.numeros_existentes: #se verifica que el número no se repita
@@ -174,7 +173,8 @@ class Telefono:
         if espacio_libre > almacenamiento: #se verifica que el espacio libre no supere al almacenamiento
             raise ValueError("El espacio libre no puede ser mayor al almacenamiento")
 
-        self.id_telefono = id_telefono
+
+        self.id_telefono = Telefono.id_telefono
         #self.id_central = None
         self.nombre = nombre
         self.modelo = modelo
@@ -195,14 +195,14 @@ class Telefono:
         self.mensajes_app = MensajesApp() #viene por default en el telefono
         #self.calculadora_grafica = CalculadoraGrafica()
 
-
+        Telefono.id_telefono += 1
         Central.numeros_existentes.append(self.numero)
 
     def __str__(self):
-        return f'(nombre: {self.nombre}, id_telefono: {self.id_telefono} , numero: {self.numero}, conectado a red: {self.estado_red})'
+        return f'(nombre: {self.nombre}, id_telefono: {self.id_telefono} , numero: {self.numero}, conectado a red: {self.estado_red}, prendido: {self.estado}, conexión internet: {self.estado_internet})'
 
-    def __repr__(self):  #se usa para una representación detallada del objeto, ideal para depuración y cuando un objeto se muestra en una lista o diccionari
-        return f'(nombre: {self.nombre}, id_telefono: {self.id_telefono} , numero: {self.numero}, conectado a red: {self.estado_red})'
+    def __repr__(self):  #se usa para una representación detallada del objeto, ideal para depuración y cuando un objeto se muestra en una lista o diccionario
+        return f'(nombre: {self.nombre}, id_telefono: {self.id_telefono} , numero: {self.numero}, conectado a red: {self.estado_red}, prendido: {self.estado}, conexión internet: {self.estado_internet})'
 
     # .........................................Metodos del telefono ..................................................................
     def on_off(self):
@@ -373,11 +373,11 @@ class Telefono:
 try:
     if __name__=='__main__':
         #creo instancias de telefono:
-        telefono_nacho = Telefono(12, "Nacho", "Iphone", "X", "IOS", 20, 500, 12345678, 400 )
-        telefono_jose = Telefono(2, "Jose", "Iphone", "X", "IOS", 20, 600, 87654321, 400)
-        telefono_agus = Telefono(5, "Agus", "Nokia", "nok", 8, 500, 100, 11112222, 21)
-        telefono_fede = Telefono(123, "Telefono de Fede", "cubo", "nok", 8, 500, 123, 11113333, 21)
-        telefono_pedro = Telefono(12, "Telefono de Pedro", "cubo", "nok", 8, 500, 123, 11110000, 21)
+        telefono_nacho = Telefono( "Nacho", "Iphone", "X", "IOS", 20, 500, 12345678, 400 )
+        telefono_jose = Telefono( "Jose", "Iphone", "X", "IOS", 20, 600, 87654321, 400)
+        telefono_agus = Telefono( "Agus", "Nokia", "nok", 8, 500, 100, 11112222, 21)
+        telefono_fede = Telefono( "Telefono de Fede", "cubo", "nok", 8, 500, 123, 11113333, 21)
+        telefono_pedro = Telefono( "Telefono de Pedro", "cubo", "nok", 8, 500, 123, 11110000, 21)
         telefono_nacho.on_off() #prendo el telefono
         telefono_nacho.desbloquear() #desbloqueo telefono
         telefono_nacho.conexion_internet() #conecto a internet
@@ -482,6 +482,7 @@ try:
 
 
 
+
         print("..........................Pruebo Calculadora............................")
         #telefono_nacho.calculadora_grafica.calcular_polinomios('x**2 - 2*x + 1', 3000)
         #telefono_fede.calculadora_grafica.factorial(5)
@@ -489,9 +490,6 @@ try:
         #telefono_jose.calculadora_grafica.desvio([27,25,42,88,15,22,21,15,24,63,73,42,23,12,10,21,21,21,2,12,12,1,21,21,21])
 
 
-
-except Exception as e:
-    print(e)
 
 except ValueError as e:
     print(e)
