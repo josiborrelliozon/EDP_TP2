@@ -1,12 +1,12 @@
 from Apps import *
-from Modulos.Spotify import SpotifyApp
+#from Spotify import SpotifyApp
 
 
 class AppStore(): #viene por Default en el telefono -> creo instancias de esta clase a través de un atributo en Telefono
 
     def __init__(self): #
         self.apps_instaladas = {}
-        self.apps_disponibles = {"Spotify": SpotifyApp()} #no instaladas pero existentes, cuando hago spotifyy poner aca
+        self.apps_disponibles = {} # "Spotify": SpotifyApp()#no instaladas pero existentes, cuando hago spotifyy poner aca
 
 
 
