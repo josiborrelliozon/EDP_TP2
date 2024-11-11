@@ -2,6 +2,9 @@ from Contactos import *
 from AppStore import *
 from Mail import *
 from Central import *
+from TelefonoApp import *
+from Configuracion import *
+from MensajesApp import *
 
 class Telefono:
     id_telefono= 1000
@@ -15,6 +18,7 @@ class Telefono:
 
         self.id_telefono = Telefono.id_telefono
         self.nombre = nombre
+        self.id_central = None
         self.codigo = codigo
         self.modelo = modelo
         self.os = os #sistema operativo
@@ -33,7 +37,7 @@ class Telefono:
         self.mail_app = mailApp() #viene por default en el telefono
         self.mensajes_app = MensajesApp() #viene por default en el telefono
         self.configuracion = Configuracion()
-        #self.calculadora_grafica = CalculadoraGrafica()
+
 
         Telefono.id_telefono += 1
 
@@ -76,7 +80,7 @@ class Telefono:
             if self.estado_red == 0: #y el celular está en "modo avíon"
                 self.estado_red = 1 #conecta la red
                 print(f" {self.numero} activó conexión a red")
-                Central.numeros_conectados_red.append(self.numero)
+
             else: #si el celular está conectado a una red
                 self.estado_red = 0 #lo pone en "modo avión"
                 print(f" {self.numero} desactivó conexión a red")
